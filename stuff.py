@@ -1,8 +1,17 @@
-import sqlite3
+import sqlalchemy as sa
+import sqlalchemy.orm as orm
+from sqlalchemy.orm import Session
+
 from io import BytesIO
 
 from qrcode.constants import ERROR_CORRECT_H
 from qrcode.main import QRCode
+
+SqlAlchemyBase = orm.declarative_base()
+
+__factory = None
+
+
 
 def create_qr(data):
     qr = QRCode(error_correction=ERROR_CORRECT_H)
