@@ -1,10 +1,10 @@
 import datetime
 import sqlalchemy
 from sqlalchemy import Column, orm
-from db_session import SqlAlchemyBase
+from data import db_session
 
 
-class Client(SqlAlchemyBase):
+class Client(db_session.SqlAlchemyBase):
     __tablename__ = 'clients'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -14,7 +14,7 @@ class Client(SqlAlchemyBase):
     comment = Column(sqlalchemy.String, nullable=True)
 
 
-class Worker(SqlAlchemyBase):
+class Worker(db_session.SqlAlchemyBase):
     __tablename__ = 'workers'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -25,7 +25,7 @@ class Worker(SqlAlchemyBase):
     comment = Column(sqlalchemy.String, nullable=True)
 
 
-class Thing(SqlAlchemyBase):
+class Thing(db_session.SqlAlchemyBase):
     __tablename__ = 'things'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -38,7 +38,7 @@ class Thing(SqlAlchemyBase):
     client = orm.relationship('Client')
 
 
-class Order(SqlAlchemyBase):
+class Order(db_session.SqlAlchemyBase):
     __tablename__ = 'orders'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -49,7 +49,7 @@ class Order(SqlAlchemyBase):
     client = orm.relationship('Client')
 
 
-class Acceptance(SqlAlchemyBase):
+class Acceptance(db_session.SqlAlchemyBase):
     __tablename__ = 'acceptances'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -63,7 +63,7 @@ class Acceptance(SqlAlchemyBase):
     worker = orm.relationship('Worker')
 
 
-class Work(SqlAlchemyBase):
+class Work(db_session.SqlAlchemyBase):
     __tablename__ = 'works'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -76,4 +76,17 @@ class Work(SqlAlchemyBase):
 
     acceptance = orm.relationship('Acceptance')
     thing = orm.relationship('Thing')
+    worker = orm.relationship('Worker')
+
+
+class Shipment(db_session.SqlAlchemyBase):
+    __tablename__ = 'shipment'
+
+    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    acceptance_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('acceptances.id'))
+    worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
+    comment = Column(sqlalchemy.String, nullable=True)
+    status = Column(sqlalchemy.String, nullable=True)
+
+    acceptance = orm.relationship('Acceptance')
     worker = orm.relationship('Worker')
