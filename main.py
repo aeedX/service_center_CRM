@@ -1,5 +1,7 @@
-from flask import Flask, request, redirect, render_template, url_for, send_file
-from data import db_session
+from flask import Flask, request, make_response, redirect, render_template, url_for, send_file
+from data import db_session, tables
+
+from werkzeug.security import generate_password_hash
 
 import forms
 import stuff
@@ -20,7 +22,9 @@ def index():
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
-        return redirect('/dashboard')
+        resp = redirect('/dashboard')
+        resp.set_cookie('user', form.data['username'])
+        return resp
     return render_template('login.html', form=form)
 
 

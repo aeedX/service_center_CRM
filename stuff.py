@@ -7,6 +7,9 @@ from io import BytesIO
 from qrcode.constants import ERROR_CORRECT_H
 from qrcode.main import QRCode
 
+from data import db_session
+from data.tables import Worker
+
 SqlAlchemyBase = orm.declarative_base()
 
 __factory = None
@@ -22,11 +25,7 @@ def create_qr(data):
     img_io.seek(0)
     return img_io
 
-def check_user(user):
-    connection = sqlite3.connect('data.db')
-    cursor = connection.cursor()
-
-    result = cursor.execute("""SELECT user, password FROM users WHERE user = ?""", (user,)).fetchall()
-
-    connection.close()
-    return result
+def get_user(username):
+    db_sess = db_session.create_session()
+    worker = db_sess.query(Worker).filter(Worker.username == username).first()
+    return worker

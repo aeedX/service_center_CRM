@@ -2,14 +2,16 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, StopValidation
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import stuff
 
 
 class CorrectData:
     def __call__(self, form, field):
-        user = stuff.check_user(field.data)
+        user = stuff.get_user(field.data)
         if user:
-            if form.data['password'] == user[0][1]:
+            if check_password_hash(user.password, form.data['password']):
                 return
             raise StopValidation('password incorrect')
         raise StopValidation('user does not exist')

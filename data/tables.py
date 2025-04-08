@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import sqlalchemy
 from sqlalchemy import Column, orm
 from data import db_session
@@ -18,6 +18,7 @@ class Worker(db_session.SqlAlchemyBase):
     __tablename__ = 'workers'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    username = Column(sqlalchemy.String, nullable=True)
     name = Column(sqlalchemy.String, nullable=True)
     password = Column(sqlalchemy.String, nullable=True)
     role = Column(sqlalchemy.String, nullable=True)
@@ -43,6 +44,7 @@ class Order(db_session.SqlAlchemyBase):
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     client_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('clients.id'))
+    create_date = Column(sqlalchemy.DateTime, default=dt.datetime.now())
     comment = Column(sqlalchemy.String, nullable=True)
     status =  Column(sqlalchemy.String, nullable=True)
 
@@ -80,7 +82,7 @@ class Work(db_session.SqlAlchemyBase):
 
 
 class Shipment(db_session.SqlAlchemyBase):
-    __tablename__ = 'shipment'
+    __tablename__ = 'shipments'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     acceptance_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('acceptances.id'))
