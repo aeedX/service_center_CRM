@@ -30,17 +30,20 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
+    user = request.cookies.get('user')
+    if not user:
+        return redirect('/login')
     db_sess = db_session.create_session()
     username = request.cookies.get('user')
     user = db_sess.query(tables.Worker).filter(tables.Worker.username == username).first()
     title = f'{user.role} ({user.name})'
-    return render_template(f'{user.role}-dashboard.html', title=title)
+    return render_template('dashboard.html', role=user.role, title=title)
     # return send_file(stuff.create_qr('http://192.168.0.4:8080/dashboard'), mimetype='image/png')
 
 
 def main():
     db_session.global_init("db/data.db")
-    app.run(port=8080, host='192.168.0.4')
+    app.run(port=8080, host='127.0.0.1')
 
 
 if __name__ == '__main__':
