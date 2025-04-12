@@ -3,24 +3,24 @@
 {% block content %}
 <p align="center" style="line-height:3;"><br>
     {% if role == "manager" %}
-        <a class="btn btn-secondary" href="/clients" role="button">Clients</a>
-        <a class="btn btn-secondary" href="/orders" role="button">Orders</a>
+        <a class="btn btn-secondary" href="/tables/clients" role="button">Clients</a>
+        <a class="btn btn-secondary" href="/tables/orders" role="button">Orders</a>
      {% elif role == "courier" %}
-        <a class="btn btn-secondary" href="/orders" role="button">Orders</a>
-        <a class="btn btn-secondary" href="/acceptances" role="button">Acceptances</a>
-        <a class="btn btn-secondary" href="/things" role="button">Things</a>
-        <a class="btn btn-secondary" href="/shipments" role="button">Shipments</a>
+        <a class="btn btn-secondary" href="/tables/orders" role="button">Orders</a>
+        <a class="btn btn-secondary" href="/tables/acceptances" role="button">Acceptances</a>
+        <a class="btn btn-secondary" href="/tables/things" role="button">Things</a>
+        <a class="btn btn-secondary" href="/tables/shipments" role="button">Shipments</a>
      {% elif role == "worker" %}
-        <a class="btn btn-secondary" href="/acceptances" role="button">Acceptances</a>
-        <a class="btn btn-secondary" href="/works" role="button">Works</a>
+        <a class="btn btn-secondary" href="/tables/acceptances" role="button">Acceptances</a>
+        <a class="btn btn-secondary" href="/tables/works" role="button">Works</a>
     {% else %}
-        <a class="btn btn-secondary" href="/clients" role="button">Clients</a>
-        <a class="btn btn-secondary" href="/orders" role="button">Orders</a>
-        <a class="btn btn-secondary" href="/acceptances" role="button">Acceptances</a>
-        <a class="btn btn-secondary" href="/things" role="button">Things</a>
-        <a class="btn btn-secondary" href="/shipments" role="button">Shipments</a>
-        <a class="btn btn-secondary" href="/works" role="button">Works</a>
-        <a class="btn btn-secondary" href="/workers" role="button">Workers</a>
+        <a class="btn btn-secondary" href="/tables/clients" role="button">Clients</a>
+        <a class="btn btn-secondary" href="/tables/orders" role="button">Orders</a>
+        <a class="btn btn-secondary" href="/tables/acceptances" role="button">Acceptances</a>
+        <a class="btn btn-secondary" href="/tables/things" role="button">Things</a>
+        <a class="btn btn-secondary" href="/tables/shipments" role="button">Shipments</a>
+        <a class="btn btn-secondary" href="/tables/works" role="button">Works</a>
+        <a class="btn btn-secondary" href="/tables/workers" role="button">Workers</a>
     {% endif %}
 </p>
 {% endblock %}

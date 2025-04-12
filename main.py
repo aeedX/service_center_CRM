@@ -22,6 +22,8 @@ def index():
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
+        global username
+        global user
         resp = redirect('/dashboard')
         resp.set_cookie('user', form.data['username'])
         return resp
@@ -30,15 +32,27 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    user = request.cookies.get('user')
-    if not user:
-        return redirect('/login')
-    db_sess = db_session.create_session()
     username = request.cookies.get('user')
-    user = db_sess.query(tables.Worker).filter(tables.Worker.username == username).first()
-    title = f'{user.role} ({user.name})'
-    return render_template('dashboard.html', role=user.role, title=title)
+    if not username:
+        return redirect('/login')
+    user = stuff.get_user(username)
+    return render_template('dashboard.html',
+                           role=user.role, title=f'{user.role} ({user.name})')
     # return send_file(stuff.create_qr('http://192.168.0.4:8080/dashboard'), mimetype='image/png')
+
+
+@app.route('/tables/<table>')
+def tables(table):
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    user = stuff.get_user(username)
+    if user.role == 'manager' and not table in ('clients', 'orders') or\
+        user.role == 'courier' and not table in ('orders', 'acceptances', 'things', 'shipments') or\
+        user.role == 'worker' and not table in ('acceptances', 'works'):
+        return redirect('/dashboard')
+    return render_template('table.html',
+                           table=table, role=user.role, title=f'{user.role} ({user.name})')
 
 
 def main():
