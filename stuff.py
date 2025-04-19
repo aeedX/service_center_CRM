@@ -1,19 +1,13 @@
-import sqlalchemy as sa
-import sqlalchemy.orm as orm
-from sqlalchemy.orm import Session
-
 from io import BytesIO
 
 from qrcode.constants import ERROR_CORRECT_H
 from qrcode.main import QRCode
 
-from data import db_session
-from data.tables import Worker
+from data.tables import *
 
 SqlAlchemyBase = orm.declarative_base()
 
 __factory = None
-
 
 
 def create_qr(data):
@@ -25,7 +19,71 @@ def create_qr(data):
     img_io.seek(0)
     return img_io
 
+
 def get_user(username):
     db_sess = db_session.create_session()
     worker = db_sess.query(Worker).filter(Worker.username == username).first()
+    db_sess.close()
     return worker
+
+
+def get_table(table, sort, reverse):
+    db_sess = db_session.create_session()
+    if table == 'clients':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Client)]
+    elif table == 'orders':
+        return [(data.id, data.client_id, data.create_date, data.comment, data.status) for data in db_sess.query(Order)]
+    elif table == 'acceptances':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Acceptance)]
+    elif table == 'things':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Thing)]
+    elif table == 'shipments':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Shipment)]
+    elif table == 'works':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Work)]
+    elif table == 'workers':
+        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Worker)]
+    db_sess.close()
+
+
+def get_entry(table, id):
+    db_sess = db_session.create_session()
+    if table == 'clients':
+        return db_sess.query(Client).filter(Client.id == id).first()
+    elif table == 'orders':
+        return db_sess.query(Order).filter(Order.id == id).first()
+    elif table == 'acceptances':
+        return db_sess.query(Acceptance).filter(Acceptance.id == id).first()
+    elif table == 'things':
+        return db_sess.query(Thing).filter(Thing.id == id).first()
+    elif table == 'shipments':
+        return db_sess.query(Shipment).filter(Shipment.id == id).first()
+    elif table == 'works':
+        return db_sess.query(Work).filter(Work.id == id).first()
+    elif table == 'workers':
+        return db_sess.query(Worker).filter(Worker.id == id).first()
+    db_sess.close()
+
+
+def update_entry(table, form):
+    db_sess = db_session.create_session()
+    if table == 'clients':
+        entry = db_sess.query(Client).filter(Client.id == form['id']).first()
+        entry.name = form['name'] if form['name'] else entry.name
+        entry.address = form['address'] if form['address'] else entry.address
+        entry.phone = form['phone'] if form['phone'] else entry.phone
+        entry.comment = form['comment'] if form['comment'] else entry.comment
+    elif table == 'orders':
+        pass
+    elif table == 'acceptances':
+        pass
+    elif table == 'things':
+        pass
+    elif table == 'shipments':
+        pass
+    elif table == 'works':
+        pass
+    elif table == 'workers':
+        pass
+    db_sess.commit()
+    db_sess.close()

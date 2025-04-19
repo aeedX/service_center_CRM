@@ -21,3 +21,7 @@ class LoginForm(FlaskForm):
     username = StringField('Логин', validators=[DataRequired(), CorrectData()])
     password = PasswordField('Пароль')
     submit = SubmitField('Войти')
+
+
+class tableRowForm(FlaskForm):
+    pass

@@ -9,6 +9,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ZxrC#@wx-%08xKA9w-#ug2YB8c-A4IWoN#y'
 api = Api(app)
 
+app.jinja_env.globals['data'] = stuff.get_table
+app.jinja_env.globals['entry'] = stuff.get_entry
+
 
 @app.route('/')
 def index():
@@ -22,8 +25,6 @@ def index():
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
-        global username
-        global user
         resp = redirect('/dashboard')
         resp.set_cookie('user', form.data['username'])
         return resp
@@ -41,7 +42,23 @@ def dashboard():
     # return send_file(stuff.create_qr('http://192.168.0.4:8080/dashboard'), mimetype='image/png')
 
 
-@app.route('/tables/<table>')
+@app.route('/clients', methods=['POST', 'GET'])
+def clients():
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    user = stuff.get_user(username)
+    if not user.role in ('manager', 'all_in'):
+        return redirect('/dashboard')
+    if request.method == 'GET':
+        return render_template('clients.html', sort='id',
+                               reverse=0, role=user.role, title=f'{user.role} ({user.name})')
+    elif request.method == 'POST':
+        stuff.update_entry('clients', request.form)
+        return redirect('/clients')
+
+
+@app.route('/tables/<table>', methods=['POST', 'GET'])
 def tables(table):
     username = request.cookies.get('user')
     if not username:
@@ -51,13 +68,30 @@ def tables(table):
         user.role == 'courier' and not table in ('orders', 'acceptances', 'things', 'shipments') or\
         user.role == 'worker' and not table in ('acceptances', 'works'):
         return redirect('/dashboard')
-    return render_template('table.html',
-                           table=table, role=user.role, title=f'{user.role} ({user.name})')
+    if request.method == 'GET':
+        return render_template('table.html', data=stuff.get_table, sort='id', reverse=0,
+                               table=table, role=user.role, title=f'{user.role} ({user.name})')
+    elif request.method == 'POST':
+        print(request.form['name'])
+        if table == 'clients':
+            pass
+        elif table == 'orders':
+            pass
+        elif table == 'acceptances':
+            pass
+        elif table == 'things':
+            pass
+        elif table == 'shipments':
+            pass
+        elif table == 'works':
+            pass
+        elif table == 'workers':
+            pass
 
 
 def main():
     db_session.global_init("db/data.db")
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8080, host='192.168.0.2')
 
 
 if __name__ == '__main__':
