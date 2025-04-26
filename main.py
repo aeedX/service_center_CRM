@@ -69,29 +69,16 @@ def tables(table):
         user.role == 'worker' and not table in ('acceptances', 'works'):
         return redirect('/dashboard')
     if request.method == 'GET':
-        return render_template('table.html', data=stuff.get_table, sort='id', reverse=0,
-                               table=table, role=user.role, title=f'{user.role} ({user.name})')
+        return render_template(f'{table}.html', sort='id',
+                               reverse=0, role=user.role, title=f'{user.role} ({user.name})')
     elif request.method == 'POST':
-        print(request.form['name'])
-        if table == 'clients':
-            pass
-        elif table == 'orders':
-            pass
-        elif table == 'acceptances':
-            pass
-        elif table == 'things':
-            pass
-        elif table == 'shipments':
-            pass
-        elif table == 'works':
-            pass
-        elif table == 'workers':
-            pass
+        stuff.update_entry(table, request.form)
+        return redirect(f'/tables/{table}')
 
 
 def main():
     db_session.global_init("db/data.db")
-    app.run(port=8080, host='192.168.0.2')
+    app.run(port=8080, host='192.168.0.14')
 
 
 if __name__ == '__main__':

@@ -1,27 +1,27 @@
 {% extends "base.html"%}
 
 {% block content %}
-<a class="btn btn-primary" href="/tables/new_entry?table=clients" role="button">New</a>
 <form name="client" method="post">
     <table>
         <tr>
-            <td><input class="form-control" placeholder="id" name="id"></td>
+            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
             <td><input class="form-control" placeholder="name" name="name"></td>
             <td><input class="form-control" placeholder="address" name="address"></td>
             <td><input class="form-control" placeholder="phone" name="phone"></td>
             <td><input class="form-control" placeholder="comment" name="comment"></td>
-            <td><button type="submit" class="btn btn-primary">Submit</button></td>
+            <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
         </tr>
     </table>
-</form>
+</form><br>
 <table>
     {% for item in data("clients", sort, reverse) %}
     <tr>
-        <td><input class="form-control" value={{item[0]}} readonly></td>
-        <td><input class="form-control" value={{item[1]}} readonly></td>
-        <td><input class="form-control" value={{item[2]}} readonly></td>
-        <td><input class="form-control" value={{item[3]}} readonly></td>
-        <td><input class="form-control" value={{item[4]}} readonly></td>
+        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
+        <td><input class="form-control" value="{{item[1]}}" readonly></td>
+        <td><input class="form-control" value="{{item[2]}}" readonly></td>
+        <td><input class="form-control" value="{{item[3]}}" readonly></td>
+        <td><input class="form-control" value="{{item[4]}}" readonly></td>
+        <td width="10%"></td>
     </tr>
     {% endfor %}
 </table>

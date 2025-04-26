@@ -1,4 +1,5 @@
 from io import BytesIO
+import datetime as dt
 
 from qrcode.constants import ERROR_CORRECT_H
 from qrcode.main import QRCode
@@ -32,9 +33,11 @@ def get_table(table, sort, reverse):
     if table == 'clients':
         return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Client)]
     elif table == 'orders':
-        return [(data.id, data.client_id, data.create_date, data.comment, data.status) for data in db_sess.query(Order)]
+        return [(data.id, db_sess.query(Client).filter(Client.id == data.client_id).first().name,
+                 data.create_date, data.comment, data.status) for data in db_sess.query(Order)]
     elif table == 'acceptances':
-        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Acceptance)]
+        return [(data.id, data.order_id, db_sess.query(Worker).filter(Worker.id == data.worker_id).first().name,
+                 data.things, data.comment, data.status) for data in db_sess.query(Acceptance)]
     elif table == 'things':
         return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Thing)]
     elif table == 'shipments':
@@ -51,7 +54,9 @@ def get_entry(table, id):
     if table == 'clients':
         return db_sess.query(Client).filter(Client.id == id).first()
     elif table == 'orders':
-        return db_sess.query(Order).filter(Order.id == id).first()
+        entry = db_sess.query(Order).filter(Order.id == id).first()[::]
+        entry[1] = db_sess.query(Client).filter(Client.id == entry[1]).first().name
+        return entry
     elif table == 'acceptances':
         return db_sess.query(Acceptance).filter(Acceptance.id == id).first()
     elif table == 'things':
@@ -68,13 +73,28 @@ def get_entry(table, id):
 def update_entry(table, form):
     db_sess = db_session.create_session()
     if table == 'clients':
-        entry = db_sess.query(Client).filter(Client.id == form['id']).first()
+        entry = db_sess.query(Client).filter(Client.id == form['id']).first() if form['id'] else Client()
         entry.name = form['name'] if form['name'] else entry.name
         entry.address = form['address'] if form['address'] else entry.address
         entry.phone = form['phone'] if form['phone'] else entry.phone
         entry.comment = form['comment'] if form['comment'] else entry.comment
     elif table == 'orders':
-        pass
+        if form['id'] and (form['client'] and form['client'].isdigit() or not form['client']):
+            entry = db_sess.query(Order).filter(Order.id == form['id']).first()
+            entry.client_id = int(form['client']) if form['client'] else entry.client_id
+            entry.create_date = dt.datetime.strptime(form['date'],
+                                                     '%Y-%m-%d %H:%M:%S.%f') if form['date'] else entry.create_date
+            entry.comment = form['comment'] if form['comment'] else entry.comment
+            entry.status = form['status'] if form['status'] else entry.status
+        elif form['client'] and form['client'].isdigit():
+            entry = Order()
+            entry.client_id = int(form['client'])
+            entry.create_date = dt.datetime.strptime(form['date'],
+                                                     '%Y-%m-%d %H:%M:%S.%f') if form['date'] else dt.datetime.now()
+            entry.comment = form['comment']
+            entry.status = form['status'] if form['status'] else 'in_progress'
+        else:
+            return
     elif table == 'acceptances':
         pass
     elif table == 'things':
@@ -85,5 +105,6 @@ def update_entry(table, form):
         pass
     elif table == 'workers':
         pass
+    if not form['id']:
+        db_sess.add(entry)
     db_sess.commit()
-    db_sess.close()

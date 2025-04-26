@@ -1,0 +1,46 @@
+{% extends "base.html"%}
+
+{% block content %}
+<form method="post">
+    <table>
+        <tr>
+            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
+            {% if role != "courier" %}
+                <td><input class="form-control" placeholder="client id" name="client"></td>
+                <td><input class="form-control" placeholder="date" name="date"></td>
+                <td><input class="form-control" placeholder="comment" name="comment"></td>
+            {% else %}
+                <input type="hidden" name="client">
+                <input type="hidden" name="date">
+                <input type="hidden" name="comment">
+            {% endif %}
+            <td><select class="form-control" name="status">
+                <option></option>
+                <option>created</option>
+                <option>in progress</option>
+            </select></td>
+            <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
+        </tr>
+    </table>
+</form><br>
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>client name</td>
+        <td>create date</td>
+        <td>comment</td>
+        <td>status</td>
+        <td width="10%"></td>
+    </tr>
+    {% for item in data("orders", sort, reverse) %}
+    <tr>
+        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
+        <td><input class="form-control" value="{{item[1]}}" readonly></td>
+        <td><input class="form-control" value="{{item[2]}}" readonly></td>
+        <td><input class="form-control" value="{{item[3]}}" readonly></td>
+        <td><input class="form-control" value="{{item[4]}}" readonly></td>
+        <td width="10%"></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

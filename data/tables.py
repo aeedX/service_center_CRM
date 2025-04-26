@@ -14,31 +14,6 @@ class Client(db_session.SqlAlchemyBase):
     comment = Column(sqlalchemy.String, nullable=True)
 
 
-class Worker(db_session.SqlAlchemyBase):
-    __tablename__ = 'workers'
-
-    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    username = Column(sqlalchemy.String, nullable=True)
-    name = Column(sqlalchemy.String, nullable=True)
-    password = Column(sqlalchemy.String, nullable=True)
-    role = Column(sqlalchemy.String, nullable=True)
-    phone = Column(sqlalchemy.String, nullable=True)
-    comment = Column(sqlalchemy.String, nullable=True)
-
-
-class Thing(db_session.SqlAlchemyBase):
-    __tablename__ = 'things'
-
-    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    sn =  Column(sqlalchemy.String, nullable=True)
-    vendor = Column(sqlalchemy.String, nullable=True)
-    model = Column(sqlalchemy.String, nullable=True)
-    client_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('clients.id'))
-    comment = Column(sqlalchemy.String, nullable=True)
-
-    client = orm.relationship('Client')
-
-
 class Order(db_session.SqlAlchemyBase):
     __tablename__ = 'orders'
 
@@ -49,6 +24,18 @@ class Order(db_session.SqlAlchemyBase):
     status =  Column(sqlalchemy.String, nullable=True)
 
     client = orm.relationship('Client')
+
+
+class Worker(db_session.SqlAlchemyBase):
+    __tablename__ = 'workers'
+
+    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    username = Column(sqlalchemy.String, nullable=True)
+    name = Column(sqlalchemy.String, nullable=True)
+    password = Column(sqlalchemy.String, nullable=True)
+    role = Column(sqlalchemy.String, nullable=True)
+    phone = Column(sqlalchemy.String, nullable=True)
+    comment = Column(sqlalchemy.String, nullable=True)
 
 
 class Acceptance(db_session.SqlAlchemyBase):
@@ -63,6 +50,19 @@ class Acceptance(db_session.SqlAlchemyBase):
 
     order = orm.relationship('Order')
     worker = orm.relationship('Worker')
+
+
+class Thing(db_session.SqlAlchemyBase):
+    __tablename__ = 'things'
+
+    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    sn =  Column(sqlalchemy.String, nullable=True)
+    vendor = Column(sqlalchemy.String, nullable=True)
+    model = Column(sqlalchemy.String, nullable=True)
+    client_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('clients.id'))
+    comment = Column(sqlalchemy.String, nullable=True)
+
+    client = orm.relationship('Client')
 
 
 class Work(db_session.SqlAlchemyBase):
