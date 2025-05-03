@@ -10,7 +10,7 @@ app.config['SECRET_KEY'] = 'ZxrC#@wx-%08xKA9w-#ug2YB8c-A4IWoN#y'
 api = Api(app)
 
 app.jinja_env.globals['data'] = stuff.get_table
-app.jinja_env.globals['entry'] = stuff.get_entry
+'''app.jinja_env.globals['entry'] = stuff.get_entry'''
 
 
 @app.route('/')
@@ -64,7 +64,7 @@ def tables(table):
     if not username:
         return redirect('/login')
     user = stuff.get_user(username)
-    if user.role == 'manager' and not table in ('clients', 'orders') or\
+    if user.role == 'manager' and not table in ('clients', 'orders', 'acceptances', 'things') or\
         user.role == 'courier' and not table in ('orders', 'acceptances', 'things', 'shipments') or\
         user.role == 'worker' and not table in ('acceptances', 'works'):
         return redirect('/dashboard')
@@ -74,6 +74,10 @@ def tables(table):
     elif request.method == 'POST':
         stuff.update_entry(table, request.form)
         return redirect(f'/tables/{table}')
+
+
+@app.route('/tables/things/<id>', methods=['GET', 'POST'])
+def thing()
 
 
 def main():
