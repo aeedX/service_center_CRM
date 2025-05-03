@@ -92,11 +92,26 @@ def update_entry(table, form):
             entry.create_date = dt.datetime.strptime(form['date'],
                                                      '%Y-%m-%d %H:%M:%S.%f') if form['date'] else dt.datetime.now()
             entry.comment = form['comment']
-            entry.status = form['status'] if form['status'] else 'in_progress'
+            entry.status = form['status'] if form['status'] else 'created'
         else:
             return
     elif table == 'acceptances':
-        pass
+        if form['id']:
+            entry = db_sess.query(Acceptance).filter(Acceptance.id == form['id']).first()
+            entry.order_id = int(form['order']) if form['order'] else entry.order_id
+            entry.worker_id = int(form['worker']) if form['worker'] else entry.worker_id
+            entry.things = form['things'] if form['things'] else entry.things
+            entry.comment = form['comment'] if form['comment'] else entry.comment
+            entry.status = form['status'] if form['status'] else entry.status
+        elif form['order'] and form['worker']:
+            entry = Order()
+            entry.order_id = int(form['order'])
+            entry.worker_id = int(form['worker'])
+            entry.things = form['things']
+            entry.comment = form['comment']
+            entry.status = form['status'] if form['status'] else 'created'
+        else:
+            return
     elif table == 'things':
         pass
     elif table == 'shipments':
