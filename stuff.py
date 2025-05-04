@@ -21,6 +21,22 @@ def create_qr(data):
     return img_io
 
 
+def create_work(thing_id, user):
+    db_sess = db_session.create_session()
+    work = Work()
+    work.thing_id = thing_id
+    work.worker_id = user.id
+    acceptances = [data for data in db_sess.query(Acceptance) if data.status == 'delivered to the worker' and
+                   str(thing_id) in data.things.split() and data.worker_id == user.id]
+    work.actions = ''
+    if acceptances:
+        work.acceptance_id = acceptances[0].id
+        db_sess.add(work)
+        db_sess.commit()
+        #return work
+        return list(db_sess.query(Work))[-1]
+
+
 def get_user(username):
     db_sess = db_session.create_session()
     worker = db_sess.query(Worker).filter(Worker.username == username).first()
@@ -31,29 +47,21 @@ def get_user(username):
 def get_table(table, sort, reverse):
     db_sess = db_session.create_session()
     if table == 'clients':
-        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Client)]
+        return db_sess.query(Client)
     elif table == 'orders':
-        return [(data.id,
-                 f'({data.client_id}) {db_sess.query(Client).filter(Client.id == data.client_id).first().name}',
-                 data.create_date, data.comment, data.status) for data in db_sess.query(Order)]
+        return db_sess.query(Order)
     elif table == 'acceptances':
-        return [(data.id, data.order_id,
-                 f'({data.worker_id}) {db_sess.query(Worker).filter(Worker.id == data.worker_id).first().name}',
-                 data.things, data.comment, data.status) for data in db_sess.query(Acceptance)]
+        return db_sess.query(Acceptance)
     elif table == 'things':
-        return [(data.id, data.sn, data.vendor, data.model,
-                 f'({data.client_id}) {db_sess.query(Client).filter(Client.id == data.client_id).first().name}',
-                 data.comment) for data in db_sess.query(Thing)]
-    elif table == 'shipments':
-        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Shipment)]
+        return db_sess.query(Thing)
     elif table == 'works':
-        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Work)]
+        return db_sess.query(Work)
     elif table == 'workers':
-        return [(data.id, data.name, data.address, data.phone, data.comment) for data in db_sess.query(Worker)]
+        return db_sess.query(Worker)
     db_sess.close()
 
 
-'''def get_entry(table, id):
+def get_entry(table, id):
     db_sess = db_session.create_session()
     if table == 'clients':
         return db_sess.query(Client).filter(Client.id == id).first()
@@ -65,13 +73,11 @@ def get_table(table, sort, reverse):
         return db_sess.query(Acceptance).filter(Acceptance.id == id).first()
     elif table == 'things':
         return db_sess.query(Thing).filter(Thing.id == id).first()
-    elif table == 'shipments':
-        return db_sess.query(Shipment).filter(Shipment.id == id).first()
     elif table == 'works':
         return db_sess.query(Work).filter(Work.id == id).first()
     elif table == 'workers':
         return db_sess.query(Worker).filter(Worker.id == id).first()
-    db_sess.close()'''
+    db_sess.close()
 
 
 def update_entry(table, form):
@@ -127,10 +133,10 @@ def update_entry(table, form):
             entry.model = form['model']
             entry.client_id = int(form['client']) if form['client'] else None
             entry.comment = form['comment']
-    elif table == 'shipments':
-        pass
     elif table == 'works':
-        pass
+        entry = db_sess.query(Work).filter(Work.id == form['id']).first()
+        entry.comment = form['comment']
+        entry.actions = ' '.join(form.getlist('actions'))
     elif table == 'workers':
         pass
     if not form['id']:

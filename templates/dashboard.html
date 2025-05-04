@@ -2,15 +2,15 @@
 
 {% block content %}
 <p align="center" style="line-height:3;"><br>
-    {% if role == "manager" %}
+    {% if user.role == "manager" %}
         <a class="btn btn-secondary" href="/tables/clients" role="button">Clients</a>
         <a class="btn btn-secondary" href="/tables/orders" role="button">Orders</a>
-     {% elif role == "courier" %}
+     {% elif user.role == "courier" %}
         <a class="btn btn-secondary" href="/tables/orders" role="button">Orders</a>
         <a class="btn btn-secondary" href="/tables/acceptances" role="button">Acceptances</a>
         <a class="btn btn-secondary" href="/tables/things" role="button">Things</a>
         <a class="btn btn-secondary" href="/tables/shipments" role="button">Shipments</a>
-     {% elif role == "worker" %}
+     {% elif user.role == "worker" %}
         <a class="btn btn-secondary" href="/tables/acceptances" role="button">Acceptances</a>
         <a class="btn btn-secondary" href="/tables/works" role="button">Works</a>
     {% else %}

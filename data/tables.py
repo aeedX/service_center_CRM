@@ -26,25 +26,13 @@ class Order(db_session.SqlAlchemyBase):
     client = orm.relationship('Client')
 
 
-class Worker(db_session.SqlAlchemyBase):
-    __tablename__ = 'workers'
-
-    id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    username = Column(sqlalchemy.String, nullable=True)
-    name = Column(sqlalchemy.String, nullable=True)
-    password = Column(sqlalchemy.String, nullable=True)
-    role = Column(sqlalchemy.String, nullable=True)
-    phone = Column(sqlalchemy.String, nullable=True)
-    comment = Column(sqlalchemy.String, nullable=True)
-
-
 class Acceptance(db_session.SqlAlchemyBase):
     __tablename__ = 'acceptances'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     order_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('orders.id'))
     worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
-    things =  Column(sqlalchemy.String, nullable=True)
+    things =  Column(sqlalchemy.String, default='', nullable=True)
     comment = Column(sqlalchemy.String, nullable=True)
     status =  Column(sqlalchemy.String, nullable=True)
 
@@ -81,14 +69,13 @@ class Work(db_session.SqlAlchemyBase):
     worker = orm.relationship('Worker')
 
 
-class Shipment(db_session.SqlAlchemyBase):
-    __tablename__ = 'shipments'
+class Worker(db_session.SqlAlchemyBase):
+    __tablename__ = 'workers'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    acceptance_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('acceptances.id'))
-    worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
+    username = Column(sqlalchemy.String, nullable=True)
+    name = Column(sqlalchemy.String, nullable=True)
+    password = Column(sqlalchemy.String, nullable=True)
+    role = Column(sqlalchemy.String, nullable=True)
+    phone = Column(sqlalchemy.String, nullable=True)
     comment = Column(sqlalchemy.String, nullable=True)
-    status = Column(sqlalchemy.String, nullable=True)
-
-    acceptance = orm.relationship('Acceptance')
-    worker = orm.relationship('Worker')

@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
-            {% if role != "courier" %}
+            {% if user.role != "courier" %}
                 <td><input class="form-control" placeholder="client id" name="client"></td>
                 <td><input class="form-control" placeholder="date" name="date"></td>
                 <td><input class="form-control" placeholder="comment" name="comment"></td>
@@ -26,7 +26,7 @@
 <table>
     <tr>
         <td width="8%">id</td>
-        <td>client name</td>
+        <td>client</td>
         <td>create date</td>
         <td>comment</td>
         <td>status</td>
@@ -34,11 +34,11 @@
     </tr>
     {% for item in data("orders", sort, reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
-        <td><input class="form-control" value="{{item[1]}}" readonly></td>
-        <td><input class="form-control" value="{{item[2]}}" readonly></td>
-        <td><input class="form-control" value="{{item[3]}}" readonly></td>
-        <td><input class="form-control" value="{{item[4]}}" readonly></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.create_date}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><input class="form-control" value="{{item.status}}" readonly></td>
         <td width="10%"></td>
     </tr>
     {% endfor %}

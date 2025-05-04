@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
-            {% if role != "worker" %}
+            {% if user.role != "worker" %}
                 <td><input class="form-control" placeholder="order id" name="order"></td>
                 <td><input class="form-control" placeholder="worker id" name="worker"></td>
                 <td><input class="form-control" placeholder="things" name="things"></td>
@@ -17,9 +17,12 @@
                 <input type="hidden" name="comment">
             {% endif %}
             <td><select class="form-control" name="status">
-                <option></option>
-                <option>created</option>
-                <option>in progress</option>
+                <option>taken from client</option>
+                <option>delivered to the worker</option>
+                <option>in process</option>
+                <option>work completed</option>
+                <option>taken from worker</option>
+                <option>delivered to the client</option>
             </select></td>
             <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
         </tr>
@@ -28,8 +31,8 @@
 <table>
     <tr>
         <td width="8%">id</td>
-        <td>order id</td>
-        <td>worker name</td>
+        <td>order id, client</td>
+        <td>worker</td>
         <td>things</td>
         <td>comment</td>
         <td>status</td>
@@ -37,12 +40,12 @@
     </tr>
     {% for item in data("acceptances", sort, reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
-        <td><input class="form-control" value="{{item[1]}}" readonly></td>
-        <td><input class="form-control" value="{{item[2]}}" readonly></td>
-        <td><input class="form-control" value="{{item[3]}}" readonly></td>
-        <td><input class="form-control" value="{{item[4]}}" readonly></td>
-        <td><input class="form-control" value="{{item[5]}}" readonly></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="({{item.order.id}}) (({{item.order.client.id}}) {{item.order.client.name}})" readonly></td>
+        <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.things}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><input class="form-control" value="{{item.status}}" readonly></td>
         <td width="10%"></td>
     </tr>
     {% endfor %}

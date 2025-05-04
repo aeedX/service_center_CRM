@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+
+{% block content %}
+<br><form method="post">
+    <table>
+        <tr>
+            <td width="8%">id</td>
+            <td>acceptance id, order</td>
+            <td>thing id</td>
+            <td>worker</td>
+            <td>actions</td>
+            <td>comment</td>
+        </tr>
+        <tr>
+            <td width="8%"><input class="form-control" value="{{work.id}}" name="id" readonly></td>
+            <td><input class="form-control" value="({{work.acceptance.id}}) (({{work.acceptance.order.id}}) (({{work.acceptance.order.client.id}}) {{work.acceptance.order.client.name}}))" readonly></td>
+            <td><input class="form-control" value="{{work.thing_id}}" readonly></td>
+            <td><input class="form-control" value="({{work.worker.id}}) {{work.worker.name}}" readonly></td>
+            <td><input class="form-control" value="{{work.actions}}" readonly></td>
+            <td><input class="form-control" value="{{work.comment}}" name="comment"></td>
+        </tr>
+    </table><br>
+    {% set actions = work.actions.split() %}
+    {% for item in ["do1", "do2", "do3", "do4"] %}
+        {% if item in actions %}
+            <input type="checkbox" name="actions" value="{{item}}" checked />{{item}}<br>
+        {% else %}
+            <input type="checkbox" name="actions" value="{{item}}" />{{item}}<br>
+        {% endif %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">update</button>
+</form>
+{% endblock %}

@@ -20,19 +20,18 @@
         <td>s/n</td>
         <td>vendor</td>
         <td>model</td>
-        <td>client id</td>
+        <td>client</td>
         <td>comment</td>
         <td width="10%"></td>
     </tr>
     {% for item in data("things", sort, reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
-        <td><input class="form-control" value="{{item[1]}}" readonly></td>
-        <td><input class="form-control" value="{{item[2]}}" readonly></td>
-        <td><input class="form-control" value="{{item[3]}}" readonly></td>
-        <td><input class="form-control" value="{{item[4]}}" readonly></td>
-        <td><input class="form-control" value="{{item[5]}}" readonly></td>
-        <td width="10%"></td>
+        <td width="8%"><a href="/tables/things/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td><input class="form-control" value="{{item.sn}}" readonly></td>
+        <td><input class="form-control" value="{{item.vendor}}" readonly></td>
+        <td><input class="form-control" value="{{item.model}}" readonly></td>
+        <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
     </tr>
     {% endfor %}
 </table>

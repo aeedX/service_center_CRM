@@ -1,0 +1,52 @@
+{% extends "base.html"%}
+
+{% block content %}
+<form method="post">
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>s/n</td>
+        <td>vendor</td>
+        <td>model</td>
+        <td>client id</td>
+        <td>comment</td>
+        <td width="10%"></td>
+    </tr>
+    <tr>
+        <td width="8%"><input class="form-control" value="{{thing.id}}" name="id"></td>
+        <td><input class="form-control" value="{{thing.sn}}" name="sn"></td>
+        <td><input class="form-control" value="{{thing.vendor}}" name="vendor"></td>
+        <td><input class="form-control" value="{{thing.model}}" name="model"></td>
+        <td><input class="form-control" value="{{thing.client.id}}" name="client id"></td>
+        <td><input class="form-control" value="{{thing.comment}}" name="comment"></td>
+        <td width="10%"><button type="submit" class="btn btn-primary">update</button></td>
+    </tr>
+</table>
+</form>
+<a class="btn btn-secondary" href="/tables/things/{{thing.id}}/qr" role="button">Get <b>QR</b></a>
+<a class="btn btn-secondary" href="/tables/works/new/{{thing.id}}" role="button">New <b>work</b></a>
+<br>
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>acceptance id, order</td>
+        <td>thing id</td>
+        <td>worker</td>
+        <td>actions</td>
+        <td>comment</td>
+        <td>status</td>
+        <td width="10%"></td>
+    </tr>
+    {% for item in works %}
+    <tr>
+        <td width="8%"><a href="/tables/works/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
+        <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
+        <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.actions}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><input class="form-control" value="{{item.status}}" readonly></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
