@@ -1,10 +1,11 @@
 import datetime as dt
 import sqlalchemy
+from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import Column, orm
 from data import db_session
 
 
-class Client(db_session.SqlAlchemyBase):
+class Client(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'clients'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -14,7 +15,7 @@ class Client(db_session.SqlAlchemyBase):
     comment = Column(sqlalchemy.String, nullable=True)
 
 
-class Order(db_session.SqlAlchemyBase):
+class Order(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'orders'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -26,7 +27,7 @@ class Order(db_session.SqlAlchemyBase):
     client = orm.relationship('Client')
 
 
-class Acceptance(db_session.SqlAlchemyBase):
+class Acceptance(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'acceptances'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -40,7 +41,7 @@ class Acceptance(db_session.SqlAlchemyBase):
     worker = orm.relationship('Worker')
 
 
-class Thing(db_session.SqlAlchemyBase):
+class Thing(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'things'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -53,7 +54,7 @@ class Thing(db_session.SqlAlchemyBase):
     client = orm.relationship('Client')
 
 
-class Work(db_session.SqlAlchemyBase):
+class Work(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'works'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -69,7 +70,7 @@ class Work(db_session.SqlAlchemyBase):
     worker = orm.relationship('Worker')
 
 
-class Worker(db_session.SqlAlchemyBase):
+class Worker(db_session.SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'workers'
 
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)

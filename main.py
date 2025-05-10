@@ -1,5 +1,6 @@
-from flask import Flask, request, make_response, redirect, render_template, send_file
+from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify
 from data import db_session
+from data import crm_api
 from data.tables import *
 from flask_restful import reqparse, abort, Api, Resource
 
@@ -128,9 +129,20 @@ def error():
     return render_template('error.html')
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
 def main():
     print(LOCAL_IP)
     db_session.global_init("db/data.db")
+    app.register_blueprint(crm_api.blueprint)
     app.run(port=8080, host='192.168.0.14')
 
 
