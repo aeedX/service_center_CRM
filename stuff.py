@@ -1,4 +1,5 @@
 from io import BytesIO
+from json import loads, dumps
 import datetime as dt
 
 from qrcode.constants import ERROR_CORRECT_H
@@ -44,7 +45,7 @@ def get_user(username):
     return worker
 
 
-def get_table(table, sort, reverse):
+def get_table(table, sort='id', reverse=0):
     db_sess = db_session.create_session()
     if table == 'clients':
         return db_sess.query(Client)
@@ -142,3 +143,23 @@ def update_entry(table, form):
     if not form['id']:
         db_sess.add(entry)
     db_sess.commit()
+
+
+def remove_thing_from_acceptance(acceptance_id, thing_id):
+    db_sess = db_session.create_session()
+    acceptance = db_sess.query(Acceptance).get(acceptance_id)
+    things = list(loads(acceptance.things))
+    if thing_id in things:
+        things.remove(thing_id)
+        acceptance.things = dumps(things)
+        db_sess.commit()
+
+
+def add_thing_to_acceptance(acceptance_id, thing_id):
+    db_sess = db_session.create_session()
+    acceptance = db_sess.query(Acceptance).get(acceptance_id)
+    things = list(loads(acceptance.things))
+    if thing_id not in things:
+        things.append(thing_id)
+        acceptance.things = dumps(things)
+        db_sess.commit()

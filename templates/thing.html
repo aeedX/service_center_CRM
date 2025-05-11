@@ -23,9 +23,13 @@
     </tr>
 </table>
 </form>
-<a class="btn btn-secondary" href="/tables/things/{{thing.id}}/qr" role="button">Get <b>QR</b></a>
-<a class="btn btn-secondary" href="/tables/works/new/{{thing.id}}" role="button">New <b>work</b></a>
-<br>
+<a class="btn btn-info" href="/tables/things/{{thing.id}}/qr" role="button">Get <b>QR</b></a>
+<a class="btn btn-success" href="/tables/works/new/{{thing.id}}" role="button">New <b>Work</b></a><br>
+{% if not user.role == 'worker' %}
+{% if acceptance %}
+<a class="btn btn-warning" href="/tables/acceptances/{{acceptance.id}}/add_thing/{{thing.id}}" role="button">Add to {{acceptance.id}}</a>
+{% endif %}
+{% endif %}
 <table>
     <tr>
         <td width="8%">id</td>

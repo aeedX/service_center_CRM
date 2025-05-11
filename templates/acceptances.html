@@ -1,33 +1,7 @@
 {% extends "base.html"%}
 
 {% block content %}
-<form method="post">
-    <table>
-        <tr>
-            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
-            {% if user.role != "worker" %}
-                <td><input class="form-control" placeholder="order id" name="order"></td>
-                <td><input class="form-control" placeholder="worker id" name="worker"></td>
-                <td><input class="form-control" placeholder="things" name="things"></td>
-                <td><input class="form-control" placeholder="comment" name="comment"></td>
-            {% else %}
-                <input type="hidden" name="order">
-                <input type="hidden" name="worker">
-                <input type="hidden" name="things">
-                <input type="hidden" name="comment">
-            {% endif %}
-            <td><select class="form-control" name="status">
-                <option>taken from client</option>
-                <option>delivered to the worker</option>
-                <option>in process</option>
-                <option>work completed</option>
-                <option>taken from worker</option>
-                <option>delivered to the client</option>
-            </select></td>
-            <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
-        </tr>
-    </table>
-</form><br>
+<a class="btn btn-success" href="/tables/acceptances/new" role="button">New Acceptance</a><br>
 <table>
     <tr>
         <td width="8%">id</td>
@@ -38,9 +12,9 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in data("acceptances", sort, reverse) %}
+    {% for item in data("acceptances", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="8%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
         <td><input class="form-control" value="({{item.order.id}}) (({{item.order.client.id}}) {{item.order.client.name}})" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
         <td><input class="form-control" value="{{item.things}}" readonly></td>

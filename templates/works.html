@@ -30,7 +30,7 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in data("works", sort, reverse) %}
+    {% for item in data("works", sort=sort, reverse=reverse) %}
     <tr>
         <td width="8%"><a href="/tables/works/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>

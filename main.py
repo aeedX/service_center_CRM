@@ -1,3 +1,5 @@
+from json import loads, dumps
+
 from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify
 from data import db_session
 from data import crm_api
@@ -45,22 +47,6 @@ def dashboard():
     return render_template('dashboard.html', user=user)
 
 
-@app.route('/clients', methods=['POST', 'GET'])
-def clients():
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
-    if not user.role in ('manager', 'all_in'):
-        return redirect('/dashboard')
-    if request.method == 'GET':
-        return render_template('clients.html', sort='id',
-                               reverse=0, role=user.role, title=f'{user.role} ({user.name})')
-    elif request.method == 'POST':
-        stuff.update_entry('clients', request.form)
-        return redirect('/clients')
-
-
 @app.route('/tables/<table>', methods=['POST', 'GET'])
 def tables(table):
     username = request.cookies.get('user')
@@ -78,6 +64,42 @@ def tables(table):
         return redirect(f'/tables/{table}')
 
 
+@app.route('/tables/acceptances/<int:acceptance_id>', methods=['GET', 'POST'])
+def acceptance(acceptance_id):
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    user = stuff.get_user(username)
+    if request.method == 'GET':
+        data = stuff.get_entry('acceptances', acceptance_id)
+        things = stuff.get_table('things').filter(Thing.id.in_(loads(data.things)))
+        resp = make_response(render_template('acceptance.html', user=user,
+                                             acceptance=data, things=things))
+        resp.set_cookie('acceptance', str(acceptance_id))
+        return resp
+    elif request.method == 'POST':
+        stuff.update_entry('acceptances', request.form)
+        return redirect(f'/tables/acceptances/{acceptance_id}')
+
+
+@app.route('/tables/acceptances/<int:acceptance_id>/remove_thing/<int:thing_id>')
+def remove_thing(acceptance_id, thing_id):
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    stuff.remove_thing_from_acceptance(acceptance_id, thing_id)
+    return redirect(f'/tables/acceptances/{acceptance_id}')
+
+
+@app.route('/tables/acceptances/<acceptance_id>/add_thing/<int:thing_id>')
+def add_thing(acceptance_id, thing_id):
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    stuff.add_thing_to_acceptance(acceptance_id, thing_id)
+    return redirect(f'/tables/acceptances/{acceptance_id}')
+
+
 @app.route('/tables/things/<int:thing_id>', methods=['GET', 'POST'])
 def thing(thing_id):
     username = request.cookies.get('user')
@@ -86,8 +108,9 @@ def thing(thing_id):
     user = stuff.get_user(username)
     if request.method == 'GET':
         return render_template(f'thing.html', user=user,
+                               acceptance=stuff.get_entry('acceptances', int(request.cookies.get('acceptance'))),
                                thing=stuff.get_entry('things', thing_id),
-                               works=stuff.get_table('works', sort='id', reverse=0).filter(Work.thing_id == thing_id))
+                               works=stuff.get_table('works').filter(Work.thing_id == thing_id))
     elif request.method == 'POST':
         stuff.update_entry('things', request.form)
         return redirect(f'/tables/thing/{thing_id}')
@@ -143,7 +166,7 @@ def main():
     print(LOCAL_IP)
     db_session.global_init("db/data.db")
     app.register_blueprint(crm_api.blueprint)
-    app.run(port=8080, host='192.168.0.14')
+    app.run(port=8080, host=LOCAL_IP)
 
 
 if __name__ == '__main__':

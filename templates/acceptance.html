@@ -1,0 +1,55 @@
+{% extends "base.html"%}
+
+{% block content %}
+<form method="post">
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>order id</td>
+        <td>worker id</td>
+        <td>things</td>
+        <td>comment</td>
+        <td>status</td>
+    </tr>
+    <tr>
+        <td width="8%"><input class="form-control" value="{{acceptance.id}}" name="id" readonly></td>
+        <td><input class="form-control" value="{{acceptance.order_id}}" name="order"></td>
+        <td><input class="form-control" value="{{acceptance.worker_id}}" name="worker" ></td>
+        <td><input class="form-control" value="{{acceptance.things}}"></td>
+        <td><input class="form-control" value="{{acceptance.comment}}" name="comment"></td>
+        <td><select class="form-control" name="status">
+            {% for status in ['taken from client', 'delivered to the worker', 'in process', 'work completed', 'taken from worker', 'delivered to the client'] %}
+            {% if status == acceptance.status %}
+            <option selected>{{status}}</option>
+            {% else %}
+            <option>{{status}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
+    </tr>
+</table>
+</form><br>
+
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>s/n</td>
+        <td>vendor</td>
+        <td>model</td>
+        <td>client</td>
+        <td>comment</td>
+        <td width="10%"></td>
+    </tr>
+    {% for item in things %}
+    <tr>
+        <td width="8%"><a href="/tables/things/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td><input class="form-control" value="{{item.sn}}" readonly></td>
+        <td><input class="form-control" value="{{item.vendor}}" readonly></td>
+        <td><input class="form-control" value="{{item.model}}" readonly></td>
+        <td><input class="form-control" value="({{item.client_id}}) {{item.client.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td width="10%"><a class="btn btn-danger" href="/tables/acceptances/{{acceptance.id}}/remove_thing/{{item.id}}" role="button">Remove</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

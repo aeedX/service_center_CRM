@@ -14,13 +14,13 @@
     </table>
 </form><br>
 <table>
-    {% for item in data("clients", sort, reverse) %}
+    {% for item in data("clients", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item[0]}}" readonly></td>
-        <td><input class="form-control" value="{{item[1]}}" readonly></td>
-        <td><input class="form-control" value="{{item[2]}}" readonly></td>
-        <td><input class="form-control" value="{{item[3]}}" readonly></td>
-        <td><input class="form-control" value="{{item[4]}}" readonly></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="{{item.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.address}}" readonly></td>
+        <td><input class="form-control" value="{{item.phone}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td width="10%"></td>
     </tr>
     {% endfor %}
