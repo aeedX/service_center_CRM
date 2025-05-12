@@ -1,11 +1,12 @@
 {% extends "base.html"%}
 
 {% block content %}
+<h1>Приемки</h1>
 <a class="btn btn-success" href="/tables/acceptances/new" role="button">New Acceptance</a><br>
 <table>
     <tr>
         <td width="8%">id</td>
-        <td>order id, client</td>
+        <td>order id</td>
         <td>worker</td>
         <td>things</td>
         <td>comment</td>
@@ -15,7 +16,7 @@
     {% for item in data("acceptances", sort=sort, reverse=reverse) %}
     <tr>
         <td width="8%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
-        <td><input class="form-control" value="({{item.order.id}}) (({{item.order.client.id}}) {{item.order.client.name}})" readonly></td>
+        <td><input class="form-control" value="{{item.order.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
         <td><input class="form-control" value="{{item.things}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>

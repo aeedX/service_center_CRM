@@ -1,25 +1,23 @@
 {% extends "base.html"%}
 
 {% block content %}
+<h1>Заявки</h1>
 <form method="post">
     <table>
         <tr>
-            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
-            {% if user.role != "courier" %}
-                <td><input class="form-control" placeholder="client id" name="client"></td>
-                <td><input class="form-control" placeholder="date" name="date"></td>
-                <td><input class="form-control" placeholder="comment" name="comment"></td>
-            {% else %}
-                <input type="hidden" name="client">
-                <input type="hidden" name="date">
-                <input type="hidden" name="comment">
-            {% endif %}
+            <td><select class="form-control" name="client">
+                {% for client in data('clients', sort=sort, reverse=reverse) %}
+                <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
+                {% endfor %}
+            </select></td>
+            <td><input class="form-control" type="date" name="date"></td>
+            <td><input class="form-control" placeholder="comment" name="comment"></td>
             <td><select class="form-control" name="status">
                 <option></option>
                 <option>created</option>
                 <option>in progress</option>
             </select></td>
-            <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
+            <td width="10%"><button type="submit" class="btn btn-success">Add Order</button></td>
         </tr>
     </table>
 </form><br>
@@ -30,7 +28,6 @@
         <td>create date</td>
         <td>comment</td>
         <td>status</td>
-        <td width="10%"></td>
     </tr>
     {% for item in data("orders", sort=sort, reverse=reverse) %}
     <tr>
@@ -39,7 +36,10 @@
         <td><input class="form-control" value="{{item.create_date}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
-        <td width="10%"></td>
+        <td><a class="btn btn-warning" href="/tables/orders/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+        {% if user.role == 'all_in' %}
+        <td><a class="btn btn-danger" href="/tables/orders/{{item.id}}/delete" role="button"><img src="/static/icons/cross.png"></a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>

@@ -33,7 +33,7 @@ class Acceptance(db_session.SqlAlchemyBase, SerializerMixin):
     id = Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     order_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('orders.id'))
     worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
-    things =  Column(sqlalchemy.String, default='', nullable=True)
+    things =  Column(sqlalchemy.String, default='[]', nullable=True)
     comment = Column(sqlalchemy.String, nullable=True)
     status =  Column(sqlalchemy.String, nullable=True)
 

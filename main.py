@@ -64,6 +64,22 @@ def tables(table):
         return redirect(f'/tables/{table}')
 
 
+@app.route('/tables/clients/<int:client_id>', methods=['GET', 'POST'])
+def client(client_id):
+    username = request.cookies.get('user')
+    if not username:
+        return redirect('/login')
+    user = stuff.get_user(username)
+    acceptances = db_session.create_session().query(Acceptance)
+    if request.method == 'GET':
+        return render_template('client.html', user=user,
+                               acceptances=acceptances,
+                               client=stuff.get_entry('clients', client_id))
+    elif request.method == 'POST':
+        stuff.update_entry('clients', request.form)
+        return redirect(f'/tables/clients/{client_id}')
+
+
 @app.route('/tables/acceptances/<int:acceptance_id>', methods=['GET', 'POST'])
 def acceptance(acceptance_id):
     username = request.cookies.get('user')
@@ -166,7 +182,7 @@ def main():
     print(LOCAL_IP)
     db_session.global_init("db/data.db")
     app.register_blueprint(crm_api.blueprint)
-    app.run(port=8080, host=LOCAL_IP)
+    app.run(port=8080, host='192.168.0.15')
 
 
 if __name__ == '__main__':
