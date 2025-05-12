@@ -13,7 +13,7 @@
 <body>
 <header>
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="/dashboard">{{user.role}} ({{user.name}})</a>
+        <a class="navbar-brand" style="height: 63px;" href="/dashboard"><img height="63px" src="/static/icons/logo.png"></a>
         <div>
             {% if user.role == "manager" %}
                 <a class="btn btn-secondary" href="/tables/clients" role="button">Clients</a>
@@ -35,7 +35,7 @@
                 <a class="btn btn-secondary" href="/tables/workers" role="button">Workers</a>
             {% endif %}
         </div>
-        <a href="/login">log in</a>
+        <a href="/login">{{user.role}} ({{user.name}})</a>
     </nav>
 </header>
 <!-- Begin page content -->
