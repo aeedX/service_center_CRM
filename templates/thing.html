@@ -58,7 +58,7 @@
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
         <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
-        <td><input class="form-control" value="{{', '.join(item.actions.split())}}" readonly></td>
+        <td><input class="form-control" value="{{', '.join(item.actions.split(';'))}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
         <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>

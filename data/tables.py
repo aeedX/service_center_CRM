@@ -41,7 +41,7 @@ class Acceptance(db_session.SqlAlchemyBase, SerializerMixin):
     worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
     things =  Column(sqlalchemy.String, default='[]', nullable=True)
     comment = Column(sqlalchemy.String, nullable=True, default='')
-    status =  Column(sqlalchemy.String, nullable=True, default='123123123123123123123123123123')
+    status =  Column(sqlalchemy.String, nullable=True, default='taken from client')
 
     order = orm.relationship('Order')
     worker = orm.relationship('Worker')
@@ -69,7 +69,8 @@ class Work(db_session.SqlAlchemyBase, SerializerMixin):
     acceptance_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('acceptances.id'))
     thing_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('things.id'))
     worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
-    actions =  Column(sqlalchemy.String, nullable=True)
+    date = Column(sqlalchemy.Date, default=dt.date.today())
+    actions =  Column(sqlalchemy.String, nullable=True, default='')
     comment = Column(sqlalchemy.String, nullable=True)
     status =  Column(sqlalchemy.String, nullable=True)
 

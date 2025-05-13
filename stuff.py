@@ -24,7 +24,7 @@ def create_work(thing_id, user):
     work.thing_id = thing_id
     work.worker_id = user.id
     acceptances = [data for data in db_sess.query(Acceptance) if data.status == 'delivered to the worker' and
-                   str(thing_id) in data.things.split() and data.worker_id == user.id]
+                   thing_id in loads(data.things) and data.worker_id == user.id]
     if acceptances:
         work.acceptance_id = acceptances[0].id
         db_sess.add(work)
@@ -47,7 +47,6 @@ def create_acceptance(order_id):
 def get_user(username):
     db_sess = db_session.create_session()
     worker = db_sess.query(Worker).filter(Worker.username == username).first()
-    db_sess.close()
     return worker
 
 
@@ -127,19 +126,21 @@ def update_entry(table, form):
             entry.status = form['status'] if form['status'] else 'created'
     elif table == 'acceptances':
         if form['id']:
-            entry = db_sess.query(Acceptance).filter(Acceptance.id == form['id']).first()
-            entry.order_id = int(form['order']) if form['order'] else entry.order_id
-            entry.worker_id = int(form['worker']) if form['worker'] else entry.worker_id
-            entry.things = form['things'] if form['things'] else entry.things
-            entry.comment = form['comment'] if form['comment'] else entry.comment
-            entry.status = form['status'] if form['status'] else entry.status
-        else:
-            entry = Order()
-            entry.order_id = int(form['order']) if form['order'] else None
-            entry.worker_id = int(form['worker']) if form['worker'] else None
+            entry = db_sess.query(Acceptance).get(form['id'])
+            entry.order_id = form['order']
+            entry.worker_id = form['worker']
             entry.things = form['things']
             entry.comment = form['comment']
-            entry.status = form['status'] if form['status'] else 'created'
+            entry.status = form['status']
+            for work in entry.works:
+                work.worker_id = entry.worker_id
+        else:
+            entry = Order()
+            entry.order_id = form['order']
+            entry.worker_id = form['worker']
+            entry.things = form['things']
+            entry.comment = form['comment']
+            entry.status = form['status']
     elif table == 'things':
         if form['id']:
             entry = db_sess.query(Thing).get(form['id'])
@@ -158,7 +159,8 @@ def update_entry(table, form):
     elif table == 'works':
         entry = db_sess.query(Work).filter(Work.id == form['id']).first()
         entry.comment = form['comment']
-        entry.actions = ' '.join(form.getlist('actions'))
+        entry.date = dt.datetime.strptime(form['date'], '%Y-%m-%d')
+        entry.actions = ';'.join(form.getlist('actions'))
     elif table == 'users':
         if form['id']:
             entry = db_sess.query(Worker).get(form['id'])

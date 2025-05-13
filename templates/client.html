@@ -24,6 +24,7 @@
 {% if user.role == 'all_in' %}
 <a class="btn btn-danger" href="/tables/clients/{{client.id}}/delete" role="button">Delete Client</a><br>
 {% endif %}
+<h2>Приемки</h2>
 <table>
     <tr>
         <td width="8%">id</td>
@@ -42,6 +43,7 @@
         <td><input class="form-control" value="{{item.things}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/acceptances/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
     {% endif %}
     {% endfor %}

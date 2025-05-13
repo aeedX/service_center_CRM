@@ -46,7 +46,7 @@ def dashboard():
     if not username:
         return redirect('/login')
     user = stuff.get_user(username)
-    return render_template('dashboard.html', user=user)
+    return render_template('base.html', user=user)
 
 
 @app.route('/tables/<table>', methods=['POST', 'GET'])
@@ -76,7 +76,7 @@ def user(user_id):
         return render_template('user.html', user=user,
                                this_user=stuff.get_entry('workers', user_id))
     elif request.method == 'POST':
-        stuff.update_entry('workers', request.form)
+        stuff.update_entry('users', request.form)
         return redirect(f'/tables/users/{user_id}')
 
 
