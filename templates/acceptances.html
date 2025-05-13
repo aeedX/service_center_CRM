@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Приемки</h1>
-<a class="btn btn-success" href="/tables/acceptances/new" role="button">New Acceptance</a><br>
+<a class="btn btn-success" href="/tables/acceptances/new/0" role="button">New Acceptance</a><br><br>
 <table>
     <tr>
         <td width="8%">id</td>
@@ -13,15 +13,15 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in data("acceptances", sort=sort, reverse=reverse) %}
+    {% for item in get_table("acceptances", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="{{item.order.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
         <td><input class="form-control" value="{{item.things}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
-        <td width="10%"></td>
+        <td><a class="btn btn-warning" href="/tables/acceptances/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
     {% endfor %}
 </table>

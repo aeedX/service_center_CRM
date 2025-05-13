@@ -7,10 +7,6 @@ from qrcode.main import QRCode
 
 from data.tables import *
 
-SqlAlchemyBase = orm.declarative_base()
-
-__factory = None
-
 
 def create_qr(data):
     qr = QRCode(error_correction=ERROR_CORRECT_H)
@@ -29,13 +25,23 @@ def create_work(thing_id, user):
     work.worker_id = user.id
     acceptances = [data for data in db_sess.query(Acceptance) if data.status == 'delivered to the worker' and
                    str(thing_id) in data.things.split() and data.worker_id == user.id]
-    work.actions = ''
     if acceptances:
         work.acceptance_id = acceptances[0].id
         db_sess.add(work)
         db_sess.commit()
         #return work
         return list(db_sess.query(Work))[-1]
+
+
+def create_acceptance(order_id):
+    db_sess = db_session.create_session()
+    acceptance = Acceptance()
+    if order_id != 0:
+        acceptance.order_id = order_id
+    db_sess.add(acceptance)
+    db_sess.commit()
+    return list(db_sess.query(Acceptance))[-1].id
+
 
 
 def get_user(username):
@@ -67,9 +73,7 @@ def get_entry(table, id):
     if table == 'clients':
         return db_sess.query(Client).filter(Client.id == id).first()
     elif table == 'orders':
-        entry = db_sess.query(Order).filter(Order.id == id).first()[::]
-        entry[1] = db_sess.query(Client).filter(Client.id == entry[1]).first().name
-        return entry
+        return db_sess.query(Order).get(id)
     elif table == 'acceptances':
         return db_sess.query(Acceptance).filter(Acceptance.id == id).first()
     elif table == 'things':
@@ -79,6 +83,23 @@ def get_entry(table, id):
     elif table == 'workers':
         return db_sess.query(Worker).filter(Worker.id == id).first()
     db_sess.close()
+
+
+def delete_entry(table, entry_id):
+    db_sess = db_session.create_session()
+    if table == 'clients':
+        db_sess.delete(db_sess.query(Client).get(entry_id))
+    elif table == 'orders':
+        db_sess.delete(db_sess.query(Order).get(entry_id))
+    elif table == 'acceptances':
+        db_sess.delete(db_sess.query(Acceptance).get(entry_id))
+    elif table == 'things':
+        db_sess.delete(db_sess.query(Thing).get(entry_id))
+    elif table == 'works':
+        db_sess.delete(db_sess.query(Work).get(entry_id))
+    elif table == 'workers':
+        db_sess.delete(db_sess.query(Worker).get(entry_id))
+    db_sess.commit()
 
 
 def update_entry(table, form):
@@ -94,14 +115,14 @@ def update_entry(table, form):
             entry = db_sess.query(Order).filter(Order.id == form['id']).first()
             entry.client_id = int(form['client']) if form['client'] else entry.client_id
             entry.create_date = dt.datetime.strptime(form['date'],
-                                                     '%Y-%m-%d %H:%M:%S.%f') if form['date'] else entry.create_date
+                                                     '%Y-%m-%d') if form['date'] else entry.create_date
             entry.comment = form['comment'] if form['comment'] else entry.comment
             entry.status = form['status'] if form['status'] else entry.status
         else:
             entry = Order()
             entry.client_id = int(form['client']) if form['client'] else None
             entry.create_date = dt.datetime.strptime(form['date'],
-                                                     '%Y-%m-%d %H:%M:%S.%f') if form['date'] else dt.datetime.now()
+                                                     '%Y-%m-%d') if form['date'] else dt.datetime.now()
             entry.comment = form['comment']
             entry.status = form['status'] if form['status'] else 'created'
     elif table == 'acceptances':
@@ -121,25 +142,41 @@ def update_entry(table, form):
             entry.status = form['status'] if form['status'] else 'created'
     elif table == 'things':
         if form['id']:
-            entry = db_sess.query(Thing).filter(Thing.id == form['id']).first()
-            entry.sn = form['sn'] if form['sn'] else entry.sn
-            entry.vendor = form['vendor'] if form['vendor'] else entry.vendor
-            entry.model = form['model'] if form['model'] else entry.model
-            entry.client_id = int(form['client']) if form['client'] else entry.client_id
-            entry.comment = form['comment'] if form['comment'] else entry.comment
+            entry = db_sess.query(Thing).get(form['id'])
+            entry.sn = form['sn']
+            entry.vendor = form['vendor']
+            entry.model = form['model']
+            entry.client_id = form['client']
+            entry.comment = form['comment']
         else:
             entry = Thing()
             entry.sn = form['sn']
             entry.vendor = form['vendor']
             entry.model = form['model']
-            entry.client_id = int(form['client']) if form['client'] else None
+            entry.client_id = form['client']
             entry.comment = form['comment']
     elif table == 'works':
         entry = db_sess.query(Work).filter(Work.id == form['id']).first()
         entry.comment = form['comment']
         entry.actions = ' '.join(form.getlist('actions'))
     elif table == 'workers':
-        pass
+        if form['id']:
+            entry = db_sess.query(Worker).get(form['id'])
+            entry.username = form['username']
+            entry.name = form['name']
+            if form['new_password']:
+                entry.set_password(form['new_password'])
+            entry.role = form['role']
+            entry.phone = form['phone']
+            entry.comment = form['comment']
+        else:
+            entry = Worker()
+            entry.username = form['username']
+            entry.name = form['name']
+            entry.set_password(form['password'])
+            entry.role = form['role']
+            entry.phone = form['phone']
+            entry.comment = form['comment']
     if not form['id']:
         db_sess.add(entry)
     db_sess.commit()

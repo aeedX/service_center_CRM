@@ -5,18 +5,13 @@
 <form method="post">
     <table>
         <tr>
-            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
+            <input name="id" type="hidden">
             <td><input class="form-control" placeholder="acceptance id" name="acceptance"></td>
             <td><input class="form-control" placeholder="thing id" name="thing"></td>
             <td><input class="form-control" placeholder="worker id" name="worker"></td>
             <td><input class="form-control" placeholder="actions" name="actions"></td>
             <td><input class="form-control" placeholder="comment" name="comment"></td>
-            <td><select class="form-control" name="status">
-                <option></option>
-                <option>created</option>
-                <option>in progress</option>
-            </select></td>
-            <td width="10%"><button type="submit" class="btn btn-primary">add/update</button></td>
+            <td width="10%"><button type="submit" class="btn btn-success">Add</button></td>
         </tr>
     </table>
 </form><br>
@@ -31,15 +26,16 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in data("works", sort=sort, reverse=reverse) %}
+    {% for item in get_table("works", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><a href="/tables/works/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
         <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
-        <td><input class="form-control" value="{{item.actions}}" readonly></td>
+        <td><input class="form-control" value="{{', '.join(item.actions.split())}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
     {% endfor %}
 </table>

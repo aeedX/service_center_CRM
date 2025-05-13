@@ -1,0 +1,62 @@
+{% extends "base.html"%}
+
+{% block content %}
+<h1>Сотрудник: {{user.name}}</h1>
+<form method="post">
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>username</td>
+        <td>name</td>
+        <td>new password</td>
+        <td>role</td>
+        <td>phone</td>
+        <td>comment</td>
+    </tr>
+    <tr>
+        <td width="8%"><input class="form-control" value="{{this_user.id}}" name="id" readonly></td>
+        <td><input class="form-control" value="{{this_user.username}}" name="username"></td>
+        <td><input class="form-control" value="{{this_user.name}}" name="name"></td>
+        <td><input class="form-control" name="new_password"></td>
+        <td><select class="form-control" name="role">
+            {% for role in ['manager', 'courier', 'worker', 'all_in'] %}
+            {% if role == this_user.role %}
+            <option selected>{{role}}</option>
+            {% else %}
+            <option>{{role}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
+        <td><input class="form-control" value="{{this_user.phone}}" name="phone"></td>
+        <td><input class="form-control" value="{{this_user.comment}}" name="comment"></td>
+        <td width="10%"><button type="submit" class="btn btn-success">update</button></td>
+    </tr>
+</table>
+</form><br>
+{% if user.role == 'worker' %}
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>acceptance id, order</td>
+        <td>thing id</td>
+        <td>worker</td>
+        <td>actions</td>
+        <td>comment</td>
+        <td>status</td>
+        <td width="10%"></td>
+    </tr>
+    {% for item in get_table('works', sort=sort, reverse=reverse).filter(Tables.Work.worker_id == this_user.id) %}
+    <tr>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
+        <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
+        <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
+        <td><input class="form-control" value="{{', '.join(item.actions.split())}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

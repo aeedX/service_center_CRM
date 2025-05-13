@@ -5,13 +5,17 @@
 <form method="post">
     <table>
         <tr>
-            <td width="8%"><input class="form-control" placeholder="id" name="id"></td>
+            <input name="id" type="hidden">
             <td><input class="form-control" placeholder="s/n" name="sn"></td>
             <td><input class="form-control" placeholder="vendor" name="vendor"></td>
             <td><input class="form-control" placeholder="model" name="model"></td>
-            <td><input class="form-control" placeholder="client id" name="client"></td>
+            <td><select class="form-control" name="client">
+                {% for client in get_table('clients', sort=sort, reverse=reverse) %}
+                <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
+                {% endfor %}
+            </select></td>
             <td><input class="form-control" placeholder="comment" name="comment"></td>
-            <td width="10%"><button type="submit" class="btn btn-warning">add/update</button></td>
+            <td width="10%"><button type="submit" class="btn btn-success">Add</button></td>
         </tr>
     </table>
 </form><br>
@@ -25,14 +29,17 @@
         <td>comment</td>
         <td width="10%"></td>
     </tr>
-    {% for item in data("things", sort, reverse) %}
+    {% for item in get_table("things", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><a href="/tables/things/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="{{item.sn}}" readonly></td>
         <td><input class="form-control" value="{{item.vendor}}" readonly></td>
         <td><input class="form-control" value="{{item.model}}" readonly></td>
         <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        {% if user.role == 'all_in' %}
+        <td><a class="btn btn-warning" href="/tables/things/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>

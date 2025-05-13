@@ -22,7 +22,7 @@
         </tr>
     </table><br>
     {% set actions = work.actions.split() %}
-    {% for item in ["do1", "do2", "do3", "do4"] %}
+    {% for item in ["заправка картриджа", "замена фотобарабана", "замена ролика заряда", "замена чипа", "прошивка чипа", "чистка блока барабана"] %}
         {% if item in actions %}
             <input type="checkbox" name="actions" value="{{item}}" checked />{{item}}<br>
         {% else %}

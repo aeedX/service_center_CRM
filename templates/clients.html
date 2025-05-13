@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Клиенты</h1>
-<br><form name="client" method="post">
+<form name="client" method="post">
     <table>
         <tr>
             <input name="id" type="hidden">
@@ -22,7 +22,7 @@
         <td>phone</td>
         <td>comment</td>
     </tr>
-    {% for item in data("clients", sort=sort, reverse=reverse) %}
+    {% for item in get_table("clients", sort=sort, reverse=reverse) %}
     <tr>
         <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="{{item.name}}" readonly></td>
@@ -30,9 +30,6 @@
         <td><input class="form-control" value="{{item.phone}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><a class="btn btn-warning" href="/tables/clients/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
-        {% if user.role == 'all_in' %}
-        <td><a class="btn btn-danger" href="/tables/clients/{{item.id}}/delete" role="button"><img src="/static/icons/cross.png"></a></td>
-        {% endif %}
     </tr>
     {% endfor %}
 </table>

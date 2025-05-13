@@ -34,7 +34,8 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in acceptances %}
+    {% for item in get_table('acceptances') %}
+    {% if item.order.client_id == client.id %}
     <tr>
         <td width="8%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
         <td><input class="form-control" value="{{item.order.id}}" readonly></td>
@@ -43,6 +44,7 @@
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
     </tr>
+    {% endif %}
     {% endfor %}
 </table>
 {% endblock %}

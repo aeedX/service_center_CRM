@@ -14,8 +14,24 @@
     </tr>
     <tr>
         <td width="8%"><input class="form-control" value="{{acceptance.id}}" name="id" readonly></td>
-        <td><input class="form-control" value="{{acceptance.order_id}}" name="order"></td>
-        <td><input class="form-control" value="{{acceptance.worker_id}}" name="worker" ></td>
+        <td><select class="form-control" name="order">
+            {% for order in get_table('orders').filter(Tables.Order.status == 'created') %}
+            {% if order.id == acceptance.order_id %}
+            <option value="{{order.id}}" selected>{{order.id}} {{order.create_date}} {{order.client.name}}</option>
+            {% else %}
+            <option value="{{order.id}}">{{order.id}} {{order.date}} {{order.client.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
+        <td><select class="form-control" name="worker">
+            {% for worker in get_table('workers') %}
+            {% if worker.id == acceptance.worker_id %}
+            <option value="{{worker.id}}" selected>{{worker.id}} {{worker.name}}</option>
+            {% else %}
+            <option value="{{worker.id}}">{{worker.id}} {{worker.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
         <td><input class="form-control" value="{{acceptance.things}}"></td>
         <td><input class="form-control" value="{{acceptance.comment}}" name="comment"></td>
         <td><select class="form-control" name="status">
@@ -30,7 +46,9 @@
     </tr>
 </table>
 </form><br>
-
+{% if user.role == 'all_in' %}
+<a class="btn btn-danger" href="/tables/acceptances/{{acceptance.id}}/delete" role="button">Delete Acceptance</a><br>
+{% endif %}
 <table>
     <tr>
         <td width="8%">id</td>

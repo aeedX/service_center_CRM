@@ -1,0 +1,60 @@
+{% extends "base.html"%}
+
+{% block content %}
+<h1>Заявка {{order.client.name}}</h1>
+<form method="post">
+<table>
+    <tr>
+        <td width="8%"><input class="form-control" value="{{order.id}}" name="id" readonly>
+        <td><select class="form-control" name="client">
+            {% for client in get_table('clients', sort=sort, reverse=reverse) %}
+            {% if client.id == order.client_id %}
+            <option value="{{client.id}}" selected>({{client.id}}) {{client.name}}</option>
+            {% else %}
+            <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
+        <td><input class="form-control" type="date" value="{{order.create_date.strftime('%Y-%m-%d')}}" name="date"></td>
+        <td><input class="form-control" value="{{order.comment}}" name="comment"></td>
+        <td><select class="form-control" name="status">
+            {% for status in [['created', 'создана'], ['in_process', 'в работе'], ['completed', 'завершена']] %}
+            {% if status[0] == order.status %}
+            <option value="{{status[0]}}" selected>{{status[1]}}</option>
+            {% else %}
+            <option value="{{status[0]}}">{{status[1]}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
+        <td width="10%"><button type="submit" class="btn btn-success">update</button></td>
+    </tr>
+</table>
+</form><br>
+<a class="btn btn-primary" href="/tables/acceptances/new/{{order.id}}" role="button">Create Acceptance</a>
+{% if user.role == 'all_in' %}
+<a class="btn btn-danger" href="/tables/orders/{{order.id}}/delete" role="button">Delete Order</a>
+{% endif %}
+<br><h2>Приемки Заявки</h2>
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>order id</td>
+        <td>worker</td>
+        <td>things</td>
+        <td>comment</td>
+        <td>status</td>
+        <td width="10%"></td>
+    </tr>
+    {% for item in get_table('acceptances').filter(Tables.Acceptance.order_id == order.id) %}
+    <tr>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="{{item.order_id}}" readonly></td>
+        <td><input class="form-control" value="({{item.worker_id}}) {{item.worker.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.things}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/acceptances/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

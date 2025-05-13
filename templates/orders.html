@@ -7,7 +7,7 @@
         <tr>
             <input name="id" type="hidden">
             <td><select class="form-control" name="client">
-                {% for client in data('clients', sort=sort, reverse=reverse) %}
+                {% for client in get_table('clients', sort=sort, reverse=reverse) %}
                 <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
                 {% endfor %}
             </select></td>
@@ -15,8 +15,9 @@
             <td><input class="form-control" placeholder="comment" name="comment"></td>
             <td><select class="form-control" name="status">
                 <option></option>
-                <option>created</option>
-                <option>in progress</option>
+                <option value="created">создана</option>
+                <option value="in_process">в работе</option>
+                <option value="completed">завершена</option>
             </select></td>
             <td width="10%"><button type="submit" class="btn btn-success">Add Order</button></td>
         </tr>
@@ -30,7 +31,7 @@
         <td>comment</td>
         <td>status</td>
     </tr>
-    {% for item in data("orders", sort=sort, reverse=reverse) %}
+    {% for item in get_table("orders", sort=sort, reverse=reverse) %}
     <tr>
         <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
@@ -38,9 +39,6 @@
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
         <td><a class="btn btn-warning" href="/tables/orders/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
-        {% if user.role == 'all_in' %}
-        <td><a class="btn btn-danger" href="/tables/orders/{{item.id}}/delete" role="button"><img src="/static/icons/cross.png"></a></td>
-        {% endif %}
     </tr>
     {% endfor %}
 </table>

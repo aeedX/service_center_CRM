@@ -1,0 +1,45 @@
+{% extends "base.html"%}
+
+{% block content %}
+<h1>Сотрудники</h1>
+<form method="post">
+    <table>
+        <tr>
+            <input name="id" type="hidden">
+            <td><input class="form-control" placeholder="username" name="username"></td>
+            <td><input class="form-control" placeholder="name" name="name"></td>
+            <td><input class="form-control" placeholder="password" name="password"></td>
+            <td><select class="form-control" name="role">
+                <option>manager</option>
+                <option>courier</option>
+                <option>worker</option>
+                <option>all_in</option>
+            </select></td>
+            <td><input class="form-control" placeholder="phone" name="phone"></td>
+            <td><input class="form-control" placeholder="comment" name="comment"></td>
+            <td width="10%"><button type="submit" class="btn btn-success">Add</button></td>
+        </tr>
+    </table>
+</form><br>
+<table>
+    <tr>
+        <td width="8%">id</td>
+        <td>username</td>
+        <td>name</td>
+        <td>role</td>
+        <td>phone</td>
+        <td>comment</td>
+    </tr>
+    {% for item in get_table("workers", sort=sort, reverse=reverse) %}
+    <tr>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td><input class="form-control" value="{{item.username}}" readonly></td>
+        <td><input class="form-control" value="{{item.name}}" readonly></td>
+        <td><input class="form-control" value="{{item.role}}" readonly></td>
+        <td><input class="form-control" value="{{item.phone}}" readonly></td>
+        <td><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/users/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

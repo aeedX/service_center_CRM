@@ -14,21 +14,32 @@
         <td width="10%"></td>
     </tr>
     <tr>
-        <td width="8%"><input class="form-control" value="{{thing.id}}" name="id"></td>
+        <td width="8%"><input class="form-control" value="{{thing.id}}" name="id" readonly></td>
         <td><input class="form-control" value="{{thing.sn}}" name="sn"></td>
         <td><input class="form-control" value="{{thing.vendor}}" name="vendor"></td>
         <td><input class="form-control" value="{{thing.model}}" name="model"></td>
-        <td><input class="form-control" value="{{thing.client.id}}" name="client id"></td>
+        <td><select class="form-control" name="client">
+            {% for client in get_table('clients', sort=sort, reverse=reverse) %}
+            {% if client.id == thing.client_id %}
+            <option value="{{client.id}}" selected>({{client.id}}) {{client.name}}</option>
+            {% else %}
+            <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select></td>
         <td><input class="form-control" value="{{thing.comment}}" name="comment"></td>
-        <td width="10%"><button type="submit" class="btn btn-primary">update</button></td>
+        <td width="10%"><button type="submit" class="btn btn-success">update</button></td>
     </tr>
 </table>
 </form>
 <a class="btn btn-info" href="/tables/things/{{thing.id}}/qr" role="button">Get <b>QR</b></a>
 <a class="btn btn-success" href="/tables/works/new/{{thing.id}}" role="button">New <b>Work</b></a><br>
+{% if user.role == 'all_in' %}
+<a class="btn btn-danger" href="/tables/things/{{thing.id}}/delete" role="button">Delete</a>
+{% endif %}
 {% if not user.role == 'worker' %}
 {% if acceptance %}
-<a class="btn btn-warning" href="/tables/acceptances/{{acceptance.id}}/add_thing/{{thing.id}}" role="button">Add to {{acceptance.id}}</a>
+<a class="btn btn-warning" href="/tables/acceptances/{{acceptance.id}}/add_thing/{{thing.id}}" role="button">Add to {{acceptance.id}}/{{acceptance.order.client.name[:7]}}</a>
 {% endif %}
 {% endif %}
 <table>
@@ -42,15 +53,16 @@
         <td>status</td>
         <td width="10%"></td>
     </tr>
-    {% for item in works %}
+    {% for item in get_table('works').filter(Tables.Work.thing_id == thing.id) %}
     <tr>
-        <td width="8%"><a href="/tables/works/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
         <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
-        <td><input class="form-control" value="{{item.actions}}" readonly></td>
+        <td><input class="form-control" value="{{', '.join(item.actions.split())}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
     {% endfor %}
 </table>
