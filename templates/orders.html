@@ -5,6 +5,7 @@
 <form method="post">
     <table>
         <tr>
+            <input name="id" type="hidden">
             <td><select class="form-control" name="client">
                 {% for client in data('clients', sort=sort, reverse=reverse) %}
                 <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>

@@ -123,8 +123,10 @@ def thing(thing_id):
         return redirect('/login')
     user = stuff.get_user(username)
     if request.method == 'GET':
+        acceptance = stuff.get_entry('acceptances', int(request.cookies.get('acceptance')))\
+            if request.cookies.get('acceptance') else None
         return render_template(f'thing.html', user=user,
-                               acceptance=stuff.get_entry('acceptances', int(request.cookies.get('acceptance'))),
+                               acceptance=acceptance,
                                thing=stuff.get_entry('things', thing_id),
                                works=stuff.get_table('works').filter(Work.thing_id == thing_id))
     elif request.method == 'POST':
