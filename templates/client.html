@@ -31,8 +31,7 @@
         <td>worker</td>
         <td>things</td>
         <td>comment</td>
-        <td>status</td>
-        <td width="10%"></td>
+        <td colspan="2">status</td>
     </tr>
     {% for item in get_table('acceptances') %}
     {% if item.order.client_id == client.id %}
