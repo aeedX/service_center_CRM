@@ -77,7 +77,7 @@ def user(user_id):
                                this_user=stuff.get_entry('workers', user_id))
     elif request.method == 'POST':
         stuff.update_entry('users', request.form)
-        return redirect(f'/tables/users/{user_id}')
+        return redirect(f'/tables/users')
 
 
 @app.route('/tables/orders/<int:order_id>', methods=['GET', 'POST'])
@@ -91,7 +91,7 @@ def order(order_id):
                                order=stuff.get_entry('orders', order_id))
     elif request.method == 'POST':
         stuff.update_entry('orders', request.form)
-        return redirect(f'/tables/orders/{order_id}')
+        return redirect(f'/tables/orders')
 
 
 @app.route('/tables/<table>/<int:entry_id>/delete', methods=['GET', 'POST'])
@@ -111,7 +111,7 @@ def client(client_id):
                                client=stuff.get_entry('clients', client_id))
     elif request.method == 'POST':
         stuff.update_entry('clients', request.form)
-        return redirect(f'/tables/clients/{client_id}')
+        return redirect(f'/tables/clients')
 
 
 @app.route('/tables/acceptances/<int:acceptance_id>', methods=['GET', 'POST'])
@@ -129,7 +129,7 @@ def acceptance(acceptance_id):
         return resp
     elif request.method == 'POST':
         stuff.update_entry('acceptances', request.form)
-        return redirect(f'/tables/acceptances/{acceptance_id}')
+        return redirect(f'/tables/acceptances')
 
 
 @app.route('/tables/acceptances/new/<int:order_id>')
@@ -174,7 +174,7 @@ def thing(thing_id):
                                thing=stuff.get_entry('things', thing_id))
     elif request.method == 'POST':
         stuff.update_entry('things', request.form)
-        return redirect(f'/tables/things/{thing_id}')
+        return redirect(f'/tables/things')
 
 
 @app.route('/tables/things/<int:thing_id>/qr')
@@ -192,7 +192,7 @@ def work(work_id):
         return render_template(f'work.html', user=user, work=stuff.get_entry('works', work_id))
     elif request.method == 'POST':
         stuff.update_entry('works', request.form)
-        return redirect(f'/tables/works/{work_id}')
+        return redirect(f'/tables/works')
 
 
 @app.route('/tables/works/new/<int:thing_id>')
