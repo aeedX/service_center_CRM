@@ -159,7 +159,7 @@ def update_entry(table, form):
         entry = db_sess.query(Work).filter(Work.id == form['id']).first()
         entry.comment = form['comment']
         entry.actions = ' '.join(form.getlist('actions'))
-    elif table == 'workers':
+    elif table == 'users':
         if form['id']:
             entry = db_sess.query(Worker).get(form['id'])
             entry.username = form['username']
