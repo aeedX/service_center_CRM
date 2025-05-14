@@ -29,7 +29,7 @@ def login_and_role_required(current_user, page):
                     return f(*args, **kwargs)
                 return redirect('/dashboard')
             resp = redirect('/login')
-            resp.set_cookie('redirect_target', page)
+            # resp.set_cookie('redirect_target', page)
             return resp
 
         return decorated_function
