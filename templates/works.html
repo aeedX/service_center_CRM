@@ -6,9 +6,12 @@
     <table>
         <tr>
             <input name="id" type="hidden">
-            <td><input class="form-control" placeholder="acceptance id" name="acceptance"></td>
+            <td><select class="form-control" name="acceptance">
+                {% for acceptance in get_table('acceptances', reverse=1) %}
+                <option value="{{acceptance.id}}">{{acceptance.id}} {{acceptance.things}} {{acceptance.worker.name}}</option>
+                {% endfor %}
+            </select></td>
             <td><input class="form-control" placeholder="thing id" name="thing"></td>
-            <td><input class="form-control" placeholder="worker id" name="worker"></td>
             <td><input class="form-control" type="date" name="date"></td>
             <td><input class="form-control" placeholder="actions" name="actions"></td>
             <td><input class="form-control" placeholder="comment" name="comment"></td>

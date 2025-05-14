@@ -163,7 +163,6 @@ def update_entry(table, form):
             entry.model = form['model']
             entry.client_id = form['client']
             entry.comment = form['comment']
-            entry.status = form['status']
         else:
             entry = Thing()
             entry.sn = form['sn']
@@ -171,12 +170,22 @@ def update_entry(table, form):
             entry.model = form['model']
             entry.client_id = form['client']
             entry.comment = form['comment']
-            entry.status = form['status']
     elif table == 'works':
-        entry = db_sess.query(Work).get(form['id'])
-        entry.comment = form['comment']
-        entry.date = dt.datetime.strptime(form['date'], '%Y-%m-%d')
-        entry.actions = ';'.join(form.getlist('actions'))
+        if form['id']:
+            entry = db_sess.query(Work).get(form['id'])
+            entry.comment = form['comment']
+            entry.date = dt.datetime.strptime(form['date'], '%Y-%m-%d')
+            entry.actions = ';'.join(form.getlist('actions'))
+            entry.status = form['status']
+        else:
+            entry = Work()
+            entry.acceptance_id = form['acceptance']
+            entry.thing_id = form['thing']
+            entry.worker_id = db_sess.query(Acceptance).get(entry.acceptance_id).worker_id
+            entry.date = dt.datetime.strptime(form['date'], '%Y-%m-%d') if form['date'] else dt.date.today()
+            entry.actions = form['actions']
+            entry.comment = form['comment']
+            entry.status = form['status']
     elif table == 'workers':
         if form['id']:
             entry = db_sess.query(Worker).get(form['id'])
