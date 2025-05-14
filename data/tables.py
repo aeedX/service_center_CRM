@@ -72,8 +72,8 @@ class Work(db_session.SqlAlchemyBase, SerializerMixin):
     worker_id = Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('workers.id'))
     date = Column(sqlalchemy.Date, default=dt.date.today())
     actions = Column(sqlalchemy.String, nullable=True, default='')
-    comment = Column(sqlalchemy.String, nullable=True)
-    status = Column(sqlalchemy.String, nullable=True)
+    comment = Column(sqlalchemy.String, nullable=True, default='')
+    status = Column(sqlalchemy.String, nullable=True, default='Сделано')
 
     acceptance = orm.relationship('Acceptance')
     thing = orm.relationship('Thing')

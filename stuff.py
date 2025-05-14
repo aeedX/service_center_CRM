@@ -163,6 +163,7 @@ def update_entry(table, form):
             entry.model = form['model']
             entry.client_id = form['client']
             entry.comment = form['comment']
+            entry.status = form['status']
         else:
             entry = Thing()
             entry.sn = form['sn']
@@ -170,6 +171,7 @@ def update_entry(table, form):
             entry.model = form['model']
             entry.client_id = form['client']
             entry.comment = form['comment']
+            entry.status = form['status']
     elif table == 'works':
         entry = db_sess.query(Work).get(form['id'])
         entry.comment = form['comment']

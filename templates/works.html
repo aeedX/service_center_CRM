@@ -12,6 +12,11 @@
             <td><input class="form-control" type="date" name="date"></td>
             <td><input class="form-control" placeholder="actions" name="actions"></td>
             <td><input class="form-control" placeholder="comment" name="comment"></td>
+            <td><select class="form-control" name="status">
+                {% for status in ['Сделано', 'Ремонт не требуется', 'Отказ'] %}
+                <option>{{status}}</option>
+                {% endfor %}
+            </select></td>
             <td width="10%"><button type="submit" class="btn btn-success">Add</button></td>
         </tr>
     </table>
@@ -25,6 +30,7 @@
         <td>actions</td>
         <td>date</td>
         <td>comment</td>
+        <td>status</td>
         <td colspan="2">status</td>
     </tr>
     {% for item in get_table("works", sort=sort, reverse=reverse) %}

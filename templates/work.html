@@ -12,6 +12,7 @@
             <td>date</td>
             <td>actions</td>
             <td>comment</td>
+            <td>status</td>
         </tr>
         <tr>
             <td width="8%"><input class="form-control" value="{{work.id}}" name="id" readonly></td>
@@ -21,6 +22,15 @@
             <td><input class="form-control" type="date" value="{{work.date}}" name="date"></td>
             <td><input class="form-control" value="{{work.actions}}" readonly></td>
             <td><input class="form-control" value="{{work.comment}}" name="comment"></td>
+            <td><select class="form-control" name="status">
+                {% for status in ['Сделано', 'Ремонт не требуется', 'Отказ'] %}
+                {% if status == work.status %}
+                <option selected>{{status}}</option>
+                {% else %}
+                <option>{{status}}</option>
+                {% endif %}
+                {% endfor %}
+            </select></td>
         </tr>
     </table><br>
     {% set actions = work.actions.split(';') %}
