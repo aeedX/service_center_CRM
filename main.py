@@ -2,7 +2,7 @@ from json import loads
 
 from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify, current_app
 from data import db_session
-from data import crm_api
+from data import crm_restful
 import data
 from data.tables import *
 from flask_restful import Api
@@ -208,8 +208,20 @@ def bad_request(_):
 def main():
     db_session.global_init("db/data.db")
     stuff.db_sess = db_session.create_session()
-    app.register_blueprint(crm_api.blueprint)
-    app.run(port=8080, host='192.168.0.15')
+    api.add_resource(crm_restful.ClientListResource, '/api/client')
+    api.add_resource(crm_restful.ClientResource, '/api/client/<int:client_id>')
+    api.add_resource(crm_restful.AcceptanceListResource, '/api/acceptance')
+    api.add_resource(crm_restful.AcceptanceResource, '/api/acceptance/<int:acceptance_id>')
+    api.add_resource(crm_restful.ThingListResource, '/api/thing')
+    api.add_resource(crm_restful.ThingResource, '/api/thing/<int:thing_id>')
+    api.add_resource(crm_restful.WorkerListResource, '/api/worker')
+    api.add_resource(crm_restful.WorkerResource, '/api/worker/<int:worker_id>')
+    api.add_resource(crm_restful.WorkListResource, '/api/work')
+    api.add_resource(crm_restful.WorkResource, '/api/work/<int:work_id>')
+    api.add_resource(crm_restful.OrderListResource, '/api/order')
+    api.add_resource(crm_restful.OrderResource, '/api/order/<int:order_id>')
+    app.run(port=8080, host='127.0.0.1')
+
 
 
 if __name__ == '__main__':
