@@ -5,20 +5,10 @@ from wtforms.validators import DataRequired, StopValidation
 import stuff
 
 
-class CorrectData:
-    def __call__(self, form, field):
-        user = stuff.get_user(field.data)
-        if user:
-            if user.check_password(form.data['password']):
-                return
-            raise StopValidation('password incorrect')
-        raise StopValidation('user does not exist')
-
-
 class LoginForm(FlaskForm):
-    username = StringField('Логин', validators=[DataRequired(), CorrectData()])
-    password = PasswordField('Пароль')
-    submit = SubmitField('Войти')
+    username = StringField('username', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
+    submit = SubmitField('Log In')
 
 
 class tableRowForm(FlaskForm):

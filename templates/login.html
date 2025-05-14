@@ -11,28 +11,29 @@
     <title>login</title>
 </head>
 <body>
-<div>
-    <form class="login_form" action="" method="post" novalidate>
-        <h1>Авторизация</h1>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(class="form-control") }}<br>
-            {% for error in form.username.errors %}
-        <div class="alert alert-danger" role="alert">
-            {{ error }}
-        </div>
-        {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(class="form-control", type="password") }}<br>
-            {% for error in form.password.errors %}
-        <div class="alert alert-danger" role="alert">
-            {{ error }}
-        </div>
-        {% endfor %}
-        </p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    </form>
-</div>
+<form class="login_form" action="" method="post" novalidate>
+    <h1>Авторизация</h1>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username(class="form-control") }}<br>
+        {% for error in form.username.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <div>{{message}}</div>
+</form>
+</body>
+</html>

@@ -6,16 +6,8 @@
 <table>
     <tr>
         <td width="8%"><input class="form-control" value="{{order.id}}" name="id" readonly>
-        <td><select class="form-control" name="client">
-            {% for client in get_table('clients', sort=sort, reverse=reverse) %}
-            {% if client.id == order.client_id %}
-            <option value="{{client.id}}" selected>({{client.id}}) {{client.name}}</option>
-            {% else %}
-            <option value="{{client.id}}">({{client.id}}) {{client.name}}</option>
-            {% endif %}
-            {% endfor %}
-        </select></td>
-        <td><input class="form-control" type="date" value="{{order.create_date.strftime('%Y-%m-%d')}}" name="date"></td>
+        <td width="8%"><input class="form-control" value="({{order.client_id}}) {{order.client.name}}" name="client" readonly>
+        <td><input class="form-control" type="date" value="{{order.create_date}}" name="date"></td>
         <td><input class="form-control" value="{{order.comment}}" name="comment"></td>
         <td><select class="form-control" name="status">
             {% for status in [['created', 'создана'], ['in_process', 'в работе'], ['completed', 'завершена']] %}

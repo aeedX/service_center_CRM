@@ -38,7 +38,7 @@
 <a class="btn btn-danger" href="/tables/things/{{thing.id}}/delete" role="button">Delete</a>
 {% endif %}
 {% if not user.role == 'worker' %}
-{% if acceptance %}
+{% if acceptance != None %}
 <a class="btn btn-warning" href="/tables/acceptances/{{acceptance.id}}/add_thing/{{thing.id}}" role="button">Add to {{acceptance.id}}/{{acceptance.order.client.name[:7]}}...</a>
 {% endif %}
 {% endif %}

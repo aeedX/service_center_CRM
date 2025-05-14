@@ -1,19 +1,23 @@
-from json import loads, dumps
+from json import loads
 
-from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify
+from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify, current_app
 from data import db_session
 from data import crm_api
 import data
 from data.tables import *
-from flask_restful import reqparse, abort, Api, Resource
+from flask_restful import Api
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 import forms
 import stuff
 
 from socket import gethostbyname, gethostname
+
 LOCAL_IP = gethostbyname(gethostname())
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'ZxrC#@wx-%08xKA9w-#ug2YB8c-A4IWoN#y'
 api = Api(app)
 
@@ -22,72 +26,68 @@ app.jinja_env.globals['Tables'] = data.tables
 '''app.jinja_env.globals['entry'] = stuff.get_entry'''
 
 
-@app.route('/')
-def index():
-    user = request.cookies.get('user')
-    if user:
-        return redirect('/dashboard')
-    return redirect('/login')
+@login_manager.user_loader
+def load_user(worker_id):
+    db_sess = stuff.db_sess
+    worker = db_sess.query(Worker).get(worker_id)
+    return worker
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
-        resp = redirect('/dashboard')
-        resp.set_cookie('user', form.data['username'])
-        return resp
+        db_sess = stuff.db_sess
+        worker = db_sess.query(Worker).filter(Worker.username == form.username.data).first()
+        if worker and worker.check_password(form.password.data):
+            login_user(worker, remember=True)
+            return redirect(request.cookies.get('redirect_target', '/dashboard'))
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
     return render_template('login.html', form=form)
 
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
+
+
+@app.route('/')
 @app.route('/dashboard')
+@stuff.login_and_role_required(current_user, '/dashboard')
 def dashboard():
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
-    return render_template('base.html', user=user)
+    return render_template('base.html', user=current_user)
 
 
 @app.route('/tables/<table>', methods=['POST', 'GET'])
+@stuff.login_and_role_required(current_user, '/tables/')
 def tables(table):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
-    if user.role == 'manager' and not table in ('clients', 'orders', 'acceptances', 'things') or \
-            user.role == 'courier' and not table in ('orders', 'acceptances', 'things', 'shipments') or \
-            user.role == 'worker' and not table in ('acceptances', 'works'):
-        return redirect('/dashboard')
     if request.method == 'GET':
-        return render_template(f'{table}.html', sort='id', reverse=0, user=user)
+        return render_template(f'{table}.html', sort='id', reverse=0, user=current_user)
     elif request.method == 'POST':
         stuff.update_entry(table, request.form)
         return redirect(f'/tables/{table}')
 
 
-@app.route('/tables/users/<int:user_id>', methods=['GET', 'POST'])
-def user(user_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
+@app.route('/tables/workers/<int:worker_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/worker')
+def worker(worker_id):
     if request.method == 'GET':
-        return render_template('user.html', user=user,
-                               this_user=stuff.get_entry('workers', user_id))
+        return render_template('worker.html', user=current_user,
+                               this_user=stuff.get_entry('workers', worker_id))
     elif request.method == 'POST':
-        stuff.update_entry('users', request.form)
-        return redirect(f'/tables/users')
+        stuff.update_entry('workers', request.form)
+        return redirect(f'/tables/workers')
 
 
 @app.route('/tables/orders/<int:order_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/order')
 def order(order_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
     if request.method == 'GET':
-        return render_template('order.html', user=user,
+        return render_template('order.html', user=current_user,
                                order=stuff.get_entry('orders', order_id))
     elif request.method == 'POST':
         stuff.update_entry('orders', request.form)
@@ -95,19 +95,18 @@ def order(order_id):
 
 
 @app.route('/tables/<table>/<int:entry_id>/delete', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/delete')
 def delete_entry(table, entry_id):
     stuff.delete_entry(table, entry_id)
     return redirect(f'/tables/{table}')
 
 
 @app.route('/tables/clients/<int:client_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/client')
 def client(client_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
+
     if request.method == 'GET':
-        return render_template('client.html', user=user,
+        return render_template('client.html', user=current_user,
                                client=stuff.get_entry('clients', client_id))
     elif request.method == 'POST':
         stuff.update_entry('clients', request.form)
@@ -115,15 +114,13 @@ def client(client_id):
 
 
 @app.route('/tables/acceptances/<int:acceptance_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/acceptance')
 def acceptance(acceptance_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
+
     if request.method == 'GET':
         data = stuff.get_entry('acceptances', acceptance_id)
         things = stuff.get_table('things').filter(Thing.id.in_(loads(data.things)))
-        resp = make_response(render_template('acceptance.html', user=user,
+        resp = make_response(render_template('acceptance.html', user=current_user,
                                              acceptance=data, things=things))
         resp.set_cookie('acceptance', str(acceptance_id))
         return resp
@@ -133,43 +130,33 @@ def acceptance(acceptance_id):
 
 
 @app.route('/tables/acceptances/new/<int:order_id>')
+@stuff.login_and_role_required(current_user, '/tables/acceptance/new')
 def new_acceptance(order_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
     acceptance_id = stuff.create_acceptance(order_id)
     return redirect(f'/tables/acceptances/{acceptance_id}')
 
 
 @app.route('/tables/acceptances/<int:acceptance_id>/remove_thing/<int:thing_id>')
+@stuff.login_and_role_required(current_user, '/tables/acceptance/remove_thing')
 def remove_thing(acceptance_id, thing_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
     stuff.remove_thing_from_acceptance(acceptance_id, thing_id)
     return redirect(f'/tables/acceptances/{acceptance_id}')
 
 
 @app.route('/tables/acceptances/<acceptance_id>/add_thing/<int:thing_id>')
+@stuff.login_and_role_required(current_user, '/tables/acceptance/add_thing')
 def add_thing(acceptance_id, thing_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
     stuff.add_thing_to_acceptance(acceptance_id, thing_id)
     return redirect(f'/tables/acceptances/{acceptance_id}')
 
 
 @app.route('/tables/things/<int:thing_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/thing')
 def thing(thing_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
     if request.method == 'GET':
-        acceptance = stuff.get_entry('acceptances', int(request.cookies.get('acceptance')))\
+        acceptance = stuff.get_entry('acceptances', int(request.cookies.get('acceptance'))) \
             if request.cookies.get('acceptance') else None
-        return render_template(f'thing.html', user=user,
+        return render_template(f'thing.html', user=current_user,
                                acceptance=acceptance,
                                thing=stuff.get_entry('things', thing_id))
     elif request.method == 'POST':
@@ -178,30 +165,25 @@ def thing(thing_id):
 
 
 @app.route('/tables/things/<int:thing_id>/qr')
+@stuff.login_and_role_required(current_user, '/tables/thing/qr')
 def thing_qr(thing_id):
-    return send_file(stuff.create_qr(f'http://{LOCAL_IP}:8080/tables/things/{thing_id}'), mimetype='image/png')
+    return send_file(stuff.create_qr(f'http://192.168.0.15:8080/tables/things/{thing_id}'), mimetype='image/png')
 
 
 @app.route('/tables/works/<int:work_id>', methods=['GET', 'POST'])
+@stuff.login_and_role_required(current_user, '/tables/work')
 def work(work_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
     if request.method == 'GET':
-        return render_template(f'work.html', user=user, work=stuff.get_entry('works', work_id))
+        return render_template(f'work.html', user=current_user, work=stuff.get_entry('works', work_id))
     elif request.method == 'POST':
         stuff.update_entry('works', request.form)
         return redirect(f'/tables/works')
 
 
 @app.route('/tables/works/new/<int:thing_id>')
+@stuff.login_and_role_required(current_user, '/tables/work/new')
 def new_work(thing_id):
-    username = request.cookies.get('user')
-    if not username:
-        return redirect('/login')
-    user = stuff.get_user(username)
-    created_work = stuff.create_work(thing_id, user)
+    created_work = stuff.create_work(thing_id, current_user)
     if created_work:
         return redirect(f'/tables/works/{created_work.id}')
     else:
@@ -224,8 +206,8 @@ def bad_request(_):
 
 
 def main():
-    print(LOCAL_IP)
     db_session.global_init("db/data.db")
+    stuff.db_sess = db_session.create_session()
     app.register_blueprint(crm_api.blueprint)
     app.run(port=8080, host='192.168.0.15')
 

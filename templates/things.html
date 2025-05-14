@@ -1,7 +1,7 @@
 {% extends "base.html"%}
 
 {% block content %}
-<h1>Обьекты</h1>
+<h1>Объекты</h1>
 <form method="post">
     <table>
         <tr>
@@ -36,9 +36,7 @@
         <td><input class="form-control" value="{{item.model}}" readonly></td>
         <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
-        {% if user.role == 'all_in' %}
         <td><a class="btn btn-warning" href="/tables/things/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
-        {% endif %}
     </tr>
     {% endfor %}
 </table>

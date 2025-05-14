@@ -6,7 +6,7 @@
 <table>
     <tr>
         <td width="8%">id</td>
-        <td>order id</td>
+        <td>order</td>
         <td>worker id</td>
         <td>things</td>
         <td>comment</td>
@@ -14,15 +14,7 @@
     </tr>
     <tr>
         <td width="8%"><input class="form-control" value="{{acceptance.id}}" name="id" readonly></td>
-        <td><select class="form-control" name="order">
-            {% for order in get_table('orders').filter(Tables.Order.status == 'created') %}
-            {% if order.id == acceptance.order_id %}
-            <option value="{{order.id}}" selected>{{order.id}} {{order.create_date}} {{order.client.name}}</option>
-            {% else %}
-            <option value="{{order.id}}">{{order.id}} {{order.date}} {{order.client.name}}</option>
-            {% endif %}
-            {% endfor %}
-        </select></td>
+        <td width="8%"><input class="form-control" value="{{acceptance.order_id}} {{acceptance.order.create_date}} {{acceptance.order.client.name}}" name="id" readonly></td>
         <td><select class="form-control" name="worker">
             {% for worker in get_table('workers') %}
             {% if worker.id == acceptance.worker_id %}

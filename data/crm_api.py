@@ -4,14 +4,14 @@ from data import db_session
 from .tables import Client, Acceptance, Thing, Worker, Work, Order
 from flask import jsonify, make_response, request
 
-
 blueprint = flask.Blueprint(
     'news_api',
     __name__,
     template_folder='templates'
 )
 
-#client
+
+# client
 
 @blueprint.route('/api/client')
 def get_clients():
@@ -39,6 +39,7 @@ def get_one_clients(client_id):
         }
     )
 
+
 @blueprint.route('/api/client', methods=['POST'])
 def create_clients():
     if not request.json:
@@ -57,6 +58,7 @@ def create_clients():
     db_sess.commit()
     return jsonify({'id': clients.id})
 
+
 @blueprint.route('/api/client/<int:client_id>', methods=['DELETE'])
 def delete_clients(client_id):
     db_sess = db_session.create_session()
@@ -67,7 +69,8 @@ def delete_clients(client_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
-#acceptance
+
+# acceptance
 
 @blueprint.route('/api/acceptance')
 def get_acceptances():
@@ -95,6 +98,7 @@ def get_one_acceptances(acceptance_id):
         }
     )
 
+
 @blueprint.route('/api/acceptance', methods=['POST'])
 def create_acceptances():
     if not request.json:
@@ -114,6 +118,7 @@ def create_acceptances():
     db_sess.commit()
     return jsonify({'id': acceptances.id})
 
+
 @blueprint.route('/api/acceptance/<int:acceptance_id>', methods=['DELETE'])
 def delete_acceptances(acceptance_id):
     db_sess = db_session.create_session()
@@ -123,6 +128,7 @@ def delete_acceptances(acceptance_id):
     db_sess.delete(acceptances)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
 
 # thing
 
@@ -152,6 +158,7 @@ def get_one_things(thing_id):
         }
     )
 
+
 @blueprint.route('/api/thing', methods=['POST'])
 def create_things():
     if not request.json:
@@ -171,6 +178,7 @@ def create_things():
     db_sess.commit()
     return jsonify({'id': things.id})
 
+
 @blueprint.route('/api/thing/<int:thing_id>', methods=['DELETE'])
 def delete_things(thing_id):
     db_sess = db_session.create_session()
@@ -180,6 +188,7 @@ def delete_things(thing_id):
     db_sess.delete(things)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
 
 # worker
 
@@ -209,6 +218,7 @@ def get_one_workers(worker_id):
         }
     )
 
+
 @blueprint.route('/api/worker', methods=['POST'])
 def create_workers():
     if not request.json:
@@ -229,6 +239,7 @@ def create_workers():
     db_sess.commit()
     return jsonify({'id': workers.id})
 
+
 @blueprint.route('/api/worker/<int:worker_id>', methods=['DELETE'])
 def delete_workers(worker_id):
     db_sess = db_session.create_session()
@@ -238,6 +249,7 @@ def delete_workers(worker_id):
     db_sess.delete(workers)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
 
 # work
 
@@ -267,6 +279,7 @@ def get_one_works(work_id):
         }
     )
 
+
 @blueprint.route('/api/work', methods=['POST'])
 def create_works():
     if not request.json:
@@ -287,6 +300,7 @@ def create_works():
     db_sess.commit()
     return jsonify({'id': works.id})
 
+
 @blueprint.route('/api/work/<int:work_id>', methods=['DELETE'])
 def delete_works(work_id):
     db_sess = db_session.create_session()
@@ -297,7 +311,8 @@ def delete_works(work_id):
     db_sess.commit()
     return jsonify({'success': 'OK'})
 
-#order
+
+# order
 
 @blueprint.route('/api/order')
 def get_orders():
@@ -325,6 +340,7 @@ def get_one_orders(order_id):
         }
     )
 
+
 @blueprint.route('/api/order', methods=['POST'])
 def create_orders():
     if not request.json:
@@ -342,6 +358,7 @@ def create_orders():
     db_sess.add(orders)
     db_sess.commit()
     return jsonify({'id': orders.id})
+
 
 @blueprint.route('/api/order/<int:order_id>', methods=['DELETE'])
 def delete_orders(order_id):

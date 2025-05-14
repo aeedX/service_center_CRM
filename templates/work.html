@@ -9,6 +9,7 @@
             <td>acceptance id, order</td>
             <td>thing id</td>
             <td>worker</td>
+            <td>date</td>
             <td>actions</td>
             <td>comment</td>
         </tr>
@@ -17,7 +18,7 @@
             <td><input class="form-control" value="({{work.acceptance.id}}) (({{work.acceptance.order.id}}) (({{work.acceptance.order.client.id}}) {{work.acceptance.order.client.name}}))" readonly></td>
             <td><input class="form-control" value="{{work.thing_id}}" readonly></td>
             <td><input class="form-control" value="({{work.worker.id}}) {{work.worker.name}}" readonly></td>
-            <td><input class="form-control" type="date" value="{{work.date.strftime('%Y-%m-%d')}}" name="date"></td>
+            <td><input class="form-control" type="date" value="{{work.date}}" name="date"></td>
             <td><input class="form-control" value="{{work.actions}}" readonly></td>
             <td><input class="form-control" value="{{work.comment}}" name="comment"></td>
         </tr>

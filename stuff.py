@@ -2,10 +2,39 @@ from io import BytesIO
 from json import loads, dumps
 import datetime as dt
 
+from flask import redirect
 from qrcode.constants import ERROR_CORRECT_H
 from qrcode.main import QRCode
+from functools import wraps
 
 from data.tables import *
+
+required_roles = {
+    'manager'
+}
+
+db_sess = None
+
+
+def is_role_acceptable(role, page):
+    return True
+
+
+def login_and_role_required(current_user, page):
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if current_user.is_authenticated:
+                if is_role_acceptable(current_user.role, page):
+                    return f(*args, **kwargs)
+                return redirect('/dashboard')
+            resp = redirect('/login')
+            resp.set_cookie('redirect_target', page)
+            return resp
+
+        return decorated_function
+
+    return wrapper
 
 
 def create_qr(data):
@@ -19,7 +48,6 @@ def create_qr(data):
 
 
 def create_work(thing_id, user):
-    db_sess = db_session.create_session()
     work = Work()
     work.thing_id = thing_id
     work.worker_id = user.id
@@ -29,12 +57,11 @@ def create_work(thing_id, user):
         work.acceptance_id = acceptances[0].id
         db_sess.add(work)
         db_sess.commit()
-        #return work
+        # return work
         return list(db_sess.query(Work))[-1]
 
 
 def create_acceptance(order_id):
-    db_sess = db_session.create_session()
     acceptance = Acceptance()
     if order_id != 0:
         acceptance.order_id = order_id
@@ -43,15 +70,7 @@ def create_acceptance(order_id):
     return list(db_sess.query(Acceptance))[-1].id
 
 
-
-def get_user(username):
-    db_sess = db_session.create_session()
-    worker = db_sess.query(Worker).filter(Worker.username == username).first()
-    return worker
-
-
 def get_table(table, sort='id', reverse=0):
-    db_sess = db_session.create_session()
     if table == 'clients':
         return db_sess.query(Client)
     elif table == 'orders':
@@ -64,28 +83,24 @@ def get_table(table, sort='id', reverse=0):
         return db_sess.query(Work)
     elif table == 'workers':
         return db_sess.query(Worker)
-    db_sess.close()
 
 
-def get_entry(table, id):
-    db_sess = db_session.create_session()
+def get_entry(table, entry_id):
     if table == 'clients':
-        return db_sess.query(Client).filter(Client.id == id).first()
+        return db_sess.query(Client).get(entry_id)
     elif table == 'orders':
-        return db_sess.query(Order).get(id)
+        return db_sess.query(Order).get(entry_id)
     elif table == 'acceptances':
-        return db_sess.query(Acceptance).filter(Acceptance.id == id).first()
+        return db_sess.query(Acceptance).get(entry_id)
     elif table == 'things':
-        return db_sess.query(Thing).filter(Thing.id == id).first()
+        return db_sess.query(Thing).get(entry_id)
     elif table == 'works':
-        return db_sess.query(Work).filter(Work.id == id).first()
+        return db_sess.query(Work).get(entry_id)
     elif table == 'workers':
-        return db_sess.query(Worker).filter(Worker.id == id).first()
-    db_sess.close()
+        return db_sess.query(Worker).get(entry_id)
 
 
 def delete_entry(table, entry_id):
-    db_sess = db_session.create_session()
     if table == 'clients':
         db_sess.delete(db_sess.query(Client).get(entry_id))
     elif table == 'orders':
@@ -102,16 +117,15 @@ def delete_entry(table, entry_id):
 
 
 def update_entry(table, form):
-    db_sess = db_session.create_session()
     if table == 'clients':
-        entry = db_sess.query(Client).filter(Client.id == form['id']).first() if form['id'] else Client()
+        entry = db_sess.query(Client).get(form['id']) if form['id'] else Client()
         entry.name = form['name'] if form['name'] else entry.name
         entry.address = form['address'] if form['address'] else entry.address
         entry.phone = form['phone'] if form['phone'] else entry.phone
         entry.comment = form['comment'] if form['comment'] else entry.comment
     elif table == 'orders':
         if form['id']:
-            entry = db_sess.query(Order).filter(Order.id == form['id']).first()
+            entry = db_sess.query(Order).get(form['id'])
             entry.client_id = int(form['client']) if form['client'] else entry.client_id
             entry.create_date = dt.datetime.strptime(form['date'],
                                                      '%Y-%m-%d') if form['date'] else entry.create_date
@@ -157,11 +171,11 @@ def update_entry(table, form):
             entry.client_id = form['client']
             entry.comment = form['comment']
     elif table == 'works':
-        entry = db_sess.query(Work).filter(Work.id == form['id']).first()
+        entry = db_sess.query(Work).get(form['id'])
         entry.comment = form['comment']
         entry.date = dt.datetime.strptime(form['date'], '%Y-%m-%d')
         entry.actions = ';'.join(form.getlist('actions'))
-    elif table == 'users':
+    elif table == 'workers':
         if form['id']:
             entry = db_sess.query(Worker).get(form['id'])
             entry.username = form['username']
@@ -185,7 +199,6 @@ def update_entry(table, form):
 
 
 def remove_thing_from_acceptance(acceptance_id, thing_id):
-    db_sess = db_session.create_session()
     acceptance = db_sess.query(Acceptance).get(acceptance_id)
     things = list(loads(acceptance.things))
     if thing_id in things:
@@ -195,7 +208,6 @@ def remove_thing_from_acceptance(acceptance_id, thing_id):
 
 
 def add_thing_to_acceptance(acceptance_id, thing_id):
-    db_sess = db_session.create_session()
     acceptance = db_sess.query(Acceptance).get(acceptance_id)
     things = list(loads(acceptance.things))
     if thing_id not in things:
