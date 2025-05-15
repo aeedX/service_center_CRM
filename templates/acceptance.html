@@ -5,7 +5,7 @@
 <form method="post">
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>order</td>
         <td>worker id</td>
         <td>things</td>
@@ -13,8 +13,8 @@
         <td>status</td>
     </tr>
     <tr>
-        <td width="8%"><input class="form-control" value="{{acceptance.id}}" name="id" readonly></td>
-        <td width="8%"><input class="form-control" value="{{acceptance.order_id}} {{acceptance.order.create_date}} {{acceptance.order.client.name}}" name="order" readonly></td>
+        <td width="6%"><input class="form-control" value="{{acceptance.id}}" name="id" readonly></td>
+        <td><input class="form-control" value="{{acceptance.order_id}} {{acceptance.order.create_date}} {{acceptance.order.client.name}}" name="order" readonly></td>
         <td><select class="form-control" name="worker">
             {% for worker in get_table('workers') %}
             {% if worker.id == acceptance.worker_id %}
@@ -45,7 +45,7 @@
 {% endif %}
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>s/n</td>
         <td>vendor</td>
         <td>model</td>
@@ -54,7 +54,7 @@
     </tr>
     {% for item in things %}
     <tr>
-        <td width="8%"><a href="/tables/things/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="6%"><a href="/tables/things/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
         <td><input class="form-control" value="{{item.sn}}" readonly></td>
         <td><input class="form-control" value="{{item.vendor}}" readonly></td>
         <td><input class="form-control" value="{{item.model}}" readonly></td>

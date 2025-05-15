@@ -21,7 +21,7 @@
 </form><br>
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>s/n</td>
         <td>vendor</td>
         <td>model</td>
@@ -30,7 +30,7 @@
     </tr>
     {% for item in get_table("things", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="{{item.sn}}" readonly></td>
         <td><input class="form-control" value="{{item.vendor}}" readonly></td>
         <td><input class="form-control" value="{{item.model}}" readonly></td>

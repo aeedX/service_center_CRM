@@ -5,7 +5,7 @@
 <form method="post">
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>s/n</td>
         <td>vendor</td>
         <td>model</td>
@@ -14,7 +14,7 @@
         <td width="10%"></td>
     </tr>
     <tr>
-        <td width="8%"><input class="form-control" value="{{thing.id}}" name="id" readonly></td>
+        <td width="6%"><input class="form-control" value="{{thing.id}}" name="id" readonly></td>
         <td><input class="form-control" value="{{thing.sn}}" name="sn"></td>
         <td><input class="form-control" value="{{thing.vendor}}" name="vendor"></td>
         <td><input class="form-control" value="{{thing.model}}" name="model"></td>
@@ -44,7 +44,7 @@
 {% endif %}
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>acceptance id, order</td>
         <td>thing id</td>
         <td>worker</td>
@@ -54,7 +54,7 @@
     </tr>
     {% for item in get_table('works').filter(Tables.Work.thing_id == thing.id) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
         <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>

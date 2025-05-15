@@ -24,7 +24,7 @@
     </tr>
     {% for item in get_table("clients", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="{{item.name}}" readonly></td>
         <td><input class="form-control" value="{{item.address}}" readonly></td>
         <td><input class="form-control" value="{{item.phone}}" readonly></td>

@@ -5,14 +5,14 @@
 <form method="post">
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>name</td>
         <td>address</td>
         <td>phone</td>
         <td>comment</td>
     </tr>
     <tr>
-        <td width="8%"><input class="form-control" value="{{client.id}}" name="id" readonly></td>
+        <td width="6%"><input class="form-control" value="{{client.id}}" name="id" readonly></td>
         <td><input class="form-control" value="{{client.name}}" name="name"></td>
         <td><input class="form-control" value="{{client.address}}" name="address"></td>
         <td><input class="form-control" value="{{client.phone}}" name="phone"></td>
@@ -24,7 +24,7 @@
 <h2>Приемки</h2>
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>order id</td>
         <td>worker</td>
         <td>things</td>
@@ -34,7 +34,7 @@
     {% for item in get_table('acceptances') %}
     {% if item.order.client_id == client.id %}
     <tr>
-        <td width="8%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
+        <td width="6%"><a href="/tables/acceptances/{{item.id}}"><input class="form-control" value="{{item.id}}" readonly></a></td>
         <td><input class="form-control" value="{{item.order.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
         <td><input class="form-control" value="{{item.things}}" readonly></td>

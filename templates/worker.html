@@ -5,7 +5,7 @@
 <form method="post">
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>username</td>
         <td>name</td>
         <td>new password</td>
@@ -14,7 +14,7 @@
         <td>comment</td>
     </tr>
     <tr>
-        <td width="8%"><input class="form-control" value="{{this_user.id}}" name="id" readonly></td>
+        <td width="6%"><input class="form-control" value="{{this_user.id}}" name="id" readonly></td>
         <td><input class="form-control" value="{{this_user.username}}" name="username"></td>
         <td><input class="form-control" value="{{this_user.name}}" name="name"></td>
         <td><input class="form-control" name="new_password"></td>
@@ -36,7 +36,7 @@
 {% if user.role == 'worker' %}
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>acceptance id, order</td>
         <td>thing id</td>
         <td>worker</td>
@@ -46,7 +46,7 @@
     </tr>
     {% for item in get_table('works', sort=sort, reverse=reverse).filter(Tables.Work.worker_id == this_user.id) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
         <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
         <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>

@@ -2,11 +2,12 @@ from json import loads
 
 from flask import Flask, request, make_response, redirect, render_template, send_file, jsonify, current_app
 from data import db_session
-from data import crm_restful
+from data import restful_resources
 import data
 from data.tables import *
 from flask_restful import Api
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from requests import get, post
 
 import forms
 import stuff
@@ -28,8 +29,7 @@ app.jinja_env.globals['Tables'] = data.tables
 
 @login_manager.user_loader
 def load_user(worker_id):
-    db_sess = stuff.db_sess
-    worker = db_sess.query(Worker).get(worker_id)
+    worker = stuff.db_sess.get(Worker, worker_id)
     return worker
 
 
@@ -74,7 +74,7 @@ def tables(table):
 
 @app.route('/tables/workers/<int:worker_id>', methods=['GET', 'POST'])
 @stuff.login_and_role_required(current_user, '/tables/worker')
-def worker(worker_id):
+def user(worker_id):
     if request.method == 'GET':
         return render_template('worker.html', user=current_user,
                                this_user=stuff.get_entry('workers', worker_id))
@@ -104,7 +104,6 @@ def delete_entry(table, entry_id):
 @app.route('/tables/clients/<int:client_id>', methods=['GET', 'POST'])
 @stuff.login_and_role_required(current_user, '/tables/client')
 def client(client_id):
-
     if request.method == 'GET':
         return render_template('client.html', user=current_user,
                                client=stuff.get_entry('clients', client_id))
@@ -207,20 +206,19 @@ def bad_request(_):
 def main():
     db_session.global_init("db/data.db")
     stuff.db_sess = db_session.create_session()
-    api.add_resource(crm_restful.ClientListResource, '/api/client')
-    api.add_resource(crm_restful.ClientResource, '/api/client/<int:client_id>')
-    api.add_resource(crm_restful.AcceptanceListResource, '/api/acceptance')
-    api.add_resource(crm_restful.AcceptanceResource, '/api/acceptance/<int:acceptance_id>')
-    api.add_resource(crm_restful.ThingListResource, '/api/thing')
-    api.add_resource(crm_restful.ThingResource, '/api/thing/<int:thing_id>')
-    api.add_resource(crm_restful.WorkerListResource, '/api/worker')
-    api.add_resource(crm_restful.WorkerResource, '/api/worker/<int:worker_id>')
-    api.add_resource(crm_restful.WorkListResource, '/api/work')
-    api.add_resource(crm_restful.WorkResource, '/api/work/<int:work_id>')
-    api.add_resource(crm_restful.OrderListResource, '/api/order')
-    api.add_resource(crm_restful.OrderResource, '/api/order/<int:order_id>')
-    app.run(port=8080, host='127.0.0.1')
-
+    api.add_resource(restful_resources.ClientsListResource, '/api/clients')
+    api.add_resource(restful_resources.ClientsResource, '/api/clients/<int:client_id>')
+    api.add_resource(restful_resources.AcceptancesListResource, '/api/acceptances')
+    api.add_resource(restful_resources.AcceptancesResource, '/api/acceptances/<int:acceptance_id>')
+    api.add_resource(restful_resources.ThingsListResource, '/api/thing')
+    api.add_resource(restful_resources.ThingsResource, '/api/things/<int:thing_id>')
+    api.add_resource(restful_resources.WorkersListResource, '/api/workers')
+    api.add_resource(restful_resources.WorkersResource, '/api/workers/<int:worker_id>')
+    api.add_resource(restful_resources.WorksListResource, '/api/works')
+    api.add_resource(restful_resources.WorksResource, '/api/works/<int:work_id>')
+    api.add_resource(restful_resources.OrdersListResource, '/api/orders')
+    api.add_resource(restful_resources.OrdersResource, '/api/orders/<int:order_id>')
+    app.run(port=8080, host='192.168.0.15')
 
 
 if __name__ == '__main__':

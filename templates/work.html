@@ -5,22 +5,22 @@
 <br><form method="post">
     <table>
         <tr>
-            <td width="8%">id</td>
+            <td width="6%">id</td>
             <td>acceptance id, order</td>
             <td>thing id</td>
+            <td>actions</td>
             <td>worker</td>
             <td>date</td>
-            <td>actions</td>
             <td>comment</td>
             <td>status</td>
         </tr>
         <tr>
-            <td width="8%"><input class="form-control" value="{{work.id}}" name="id" readonly></td>
+            <td width="6%"><input class="form-control" value="{{work.id}}" name="id" readonly></td>
             <td><input class="form-control" value="({{work.acceptance.id}}) (({{work.acceptance.order.id}}) (({{work.acceptance.order.client.id}}) {{work.acceptance.order.client.name}}))" readonly></td>
             <td><input class="form-control" value="{{work.thing_id}}" readonly></td>
+            <td><input class="form-control" value="{{work.actions}}" readonly></td>
             <td><input class="form-control" value="({{work.worker.id}}) {{work.worker.name}}" readonly></td>
             <td><input class="form-control" type="date" value="{{work.date}}" name="date"></td>
-            <td><input class="form-control" value="{{work.actions}}" readonly></td>
             <td><input class="form-control" value="{{work.comment}}" name="comment"></td>
             <td><select class="form-control" name="status">
                 {% for status in ['Сделано', 'Ремонт не требуется', 'Отказ'] %}
@@ -34,7 +34,7 @@
         </tr>
     </table><br>
     {% set actions = work.actions.split(';') %}
-    {% for item in ["заправка картриджа", "замена фотобарабана", "замена ролика заряда", "замена чипа", "прошивка чипа", "чистка блока барабана"] %}
+    {% for item in [" диагностика", " заправка картриджа", " замена фотобарабана", " замена ролика заряда", " замена чипа", " прошивка чипа", " чистка блока барабана"] %}
         {% if item in actions %}
             <input type="checkbox" name="actions" value="{{item}}" checked>{{item}}<br>
         {% else %}

@@ -25,7 +25,7 @@
 </form><br>
 <table>
     <tr>
-        <td width="8%">id</td>
+        <td width="6%">id</td>
         <td>client</td>
         <td>create date</td>
         <td>comment</td>
@@ -33,7 +33,7 @@
     </tr>
     {% for item in get_table("orders", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
         <td><input class="form-control" value="({{item.client.id}}) {{item.client.name}}" readonly></td>
         <td><input class="form-control" value="{{item.create_date}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>

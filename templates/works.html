@@ -26,26 +26,27 @@
 </form><br>
 <table>
     <tr>
-        <td width="8%">id</td>
-        <td>acceptance id, order</td>
-        <td>thing id</td>
-        <td>worker</td>
+        <td>id</td>
+        <td colspan="3">acceptance id, date, client</td>
+        <td>model</td>
         <td>actions</td>
-        <td>date</td>
+        <td>worker</td>
+        <td>work date</td>
         <td>comment</td>
-        <td>status</td>
         <td colspan="2">status</td>
     </tr>
     {% for item in get_table("works", sort=sort, reverse=reverse) %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
-        <td><input class="form-control" value="({{item.acceptance.id}}) (({{item.acceptance.order.id}}) (({{item.acceptance.order.client.id}}) {{item.acceptance.order.client.name}}))" readonly></td>
-        <td><input class="form-control" value="{{item.thing.id}}" readonly></td>
-        <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.acceptance.id}}" readonly></td>
+        <td width="10%"><input class="form-control" value="{{item.acceptance.order.create_date}}" readonly></td>
+        <td><input class="form-control" value="{{item.acceptance.order.client.name}}" readonly></td>
+        <td width="8%"><input class="form-control" value="{{item.thing.model}}" readonly></td>
         <td><input class="form-control" value="{{', '.join(item.actions.split())}}" readonly></td>
-        <td><input class="form-control" value="{{item.date}}" readonly></td>
-        <td><input class="form-control" value="{{item.comment}}" readonly></td>
-        <td><input class="form-control" value="{{item.status}}" readonly></td>
+        <td><input class="form-control" value="({{item.worker.id}}) {{item.worker.name}}" readonly></td>
+        <td width="10%"><input class="form-control" value="{{item.date}}" readonly></td>
+        <td width="10%"><input class="form-control" value="{{item.comment}}" readonly></td>
+        <td width="10%"><input class="form-control" value="{{item.status}}" readonly></td>
         <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
     {% endfor %}

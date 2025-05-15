@@ -5,8 +5,8 @@
 <form method="post">
 <table>
     <tr>
-        <td width="8%"><input class="form-control" value="{{order.id}}" name="id" readonly>
-        <td width="8%"><input class="form-control" value="({{order.client_id}}) {{order.client.name}}" name="client" readonly>
+        <td width="6%"><input class="form-control" value="{{order.id}}" name="id" readonly>
+        <td width="6%"><input class="form-control" value="({{order.client_id}}) {{order.client.name}}" name="client" readonly>
         <td><input class="form-control" type="date" value="{{order.create_date}}" name="date"></td>
         <td><input class="form-control" value="{{order.comment}}" name="comment"></td>
         <td><select class="form-control" name="status">
@@ -26,26 +26,31 @@
 {% if user.role == 'all_in' %}
 <a class="btn btn-danger" href="/tables/orders/{{order.id}}/delete" role="button">Delete Order</a>
 {% endif %}
-<br><h2>Приемки Заявки</h2>
+<br><h2>Работы по заявке</h2>
 <table>
     <tr>
-        <td width="8%">id</td>
-        <td>order id</td>
+        <td colspan="2">id, acceptance id</td>
+        <td>date</td>
+        <td>model</td>
+        <td>actions</td>
         <td>worker</td>
-        <td>things</td>
         <td>comment</td>
         <td colspan="2">status</td>
     </tr>
-    {% for item in get_table('acceptances').filter(Tables.Acceptance.order_id == order.id) %}
+    {% for item in get_table('works') %}
+    {% if item.acceptance.order_id == order.id %}
     <tr>
-        <td width="8%"><input class="form-control" value="{{item.id}}" readonly></td>
-        <td><input class="form-control" value="{{item.order_id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.id}}" readonly></td>
+        <td width="6%"><input class="form-control" value="{{item.acceptance_id}}" readonly></td>
+        <td width="10%"><input class="form-control" value="{{item.date}}}" readonly></td>
+        <td width="8%"><input class="form-control" value="{{item.thing.model}}" readonly></td>
+        <td><input class="form-control" value="{{item.actions}}" readonly></td>
         <td><input class="form-control" value="({{item.worker_id}}) {{item.worker.name}}" readonly></td>
-        <td><input class="form-control" value="{{item.things}}" readonly></td>
         <td><input class="form-control" value="{{item.comment}}" readonly></td>
         <td><input class="form-control" value="{{item.status}}" readonly></td>
-        <td><a class="btn btn-warning" href="/tables/acceptances/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
+        <td><a class="btn btn-warning" href="/tables/works/{{item.id}}" role="button"><img src="/static/icons/edit.png"></a></td>
     </tr>
+    {% endif %}
     {% endfor %}
 </table>
 {% endblock %}
