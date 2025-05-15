@@ -116,7 +116,6 @@ def client(client_id):
 @app.route('/tables/acceptances/<int:acceptance_id>', methods=['GET', 'POST'])
 @stuff.login_and_role_required(current_user, '/tables/acceptance')
 def acceptance(acceptance_id):
-
     if request.method == 'GET':
         data = stuff.get_entry('acceptances', acceptance_id)
         things = stuff.get_table('things').filter(Thing.id.in_(loads(data.things)))
