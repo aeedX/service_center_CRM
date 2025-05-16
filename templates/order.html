@@ -6,8 +6,8 @@
 <table>
     <tr>
         <td width="6%"><input class="form-control" value="{{order.id}}" name="id" readonly>
-        <td width="6%"><input class="form-control" value="({{order.client_id}}) {{order.client.name}}" name="client" readonly>
-        <td><input class="form-control" type="date" value="{{order.create_date}}" name="date"></td>
+        <td><input class="form-control" value="({{order.client_id}}) {{order.client.name}}" name="client" readonly>
+        <td width="6%"><input class="form-control" type="date" value="{{order.create_date}}" name="date"></td>
         <td><input class="form-control" value="{{order.comment}}" name="comment"></td>
         <td><select class="form-control" name="status">
             {% for status in [['created', 'создана'], ['in_process', 'в работе'], ['completed', 'завершена']] %}
