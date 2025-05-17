@@ -165,7 +165,7 @@ def thing(thing_id):
 @app.route('/tables/things/<int:thing_id>/qr')
 @stuff.login_and_role_required(current_user, '/tables/thing/qr')
 def thing_qr(thing_id):
-    return send_file(stuff.create_qr(f'http://192.168.0.15:8080/tables/things/{thing_id}'), mimetype='image/png')
+    return send_file(stuff.create_qr(f'/tables/things/{thing_id}'), mimetype='image/png')
 
 
 @app.route('/tables/works/<int:work_id>', methods=['GET', 'POST'])
@@ -218,7 +218,7 @@ def main():
     api.add_resource(restful_resources.WorksResource, '/api/works/<int:work_id>')
     api.add_resource(restful_resources.OrdersListResource, '/api/orders')
     api.add_resource(restful_resources.OrdersResource, '/api/orders/<int:order_id>')
-    app.run(port=8080, host='192.168.0.15')
+    app.run(port=8080, host='0.0.0.0')
 
 
 if __name__ == '__main__':

@@ -39,7 +39,7 @@ def login_and_role_required(current_user, page):
 
 def create_qr(data):
     qr = QRCode(error_correction=ERROR_CORRECT_H)
-    qr.add_data(data)
+    qr.add_data(f'https://127.0.0.1/{data}')
     img = qr.make_image()
     img_io = BytesIO()
     img.save(img_io, 'PNG')
