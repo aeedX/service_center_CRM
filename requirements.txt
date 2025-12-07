@@ -8,4 +8,5 @@ Flask-WTF~=1.2.2
 requests~=2.32.3
 WTForms~=3.2.1
 qrcode~=8.2
-pillow~=10.2.0
+pillow
+
